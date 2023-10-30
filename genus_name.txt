@@ -1,0 +1,29 @@
+Sparrow - Genus: Passer
+Eagle - Genus: Aquila
+Robin - Genus: Turdus
+Hawk - Genus: Buteo
+Crow - Genus: Corvus
+Pigeon - Genus: Columba
+Owl - Genus: Strix (for some species)
+Pelican - Genus: Pelecanus
+Penguin - Genus: Spheniscus (for some species)
+Parrot - Genus: Psittacus (for some species)
+Hummingbird - Genus: Archilochus (for some species)
+Woodpecker - Genus: Picoides (for some species)
+Duck - Genus: Anas
+Goose - Genus: Anser (for some species)
+Swallow - Genus: Hirundo
+Seagull - Genus: Larus (for some species)
+Finch - Genus: Fringilla (for some species)
+Jay - Genus: Cyanocitta
+Cardinal - Genus: Cardinalis
+Bluebird - Genus: Sialia
+Vulture - Genus: Cathartes (for some species)
+Kingfisher - Genus: Alcedo (for some species)
+Heron - Genus: Ardea
+Albatross - Genus: Diomedea
+Flamingo - Genus: Phoenicopterus
+Kiwi - Genus: Apteryx
+Falcon - Genus: Falco
+Peacock - Genus: Pavo
+Toucan - Genus: Ramphastos

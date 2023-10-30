@@ -1,0 +1,7 @@
+Carnivorous
+Herbivorous 
+Omnivorous 
+Piscivorous 
+Scavengers
+Filter
+Specialized

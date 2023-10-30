@@ -8,59 +8,170 @@
     <body>
         <ul>
             <li><a class="current" href="/">Home</a></li>
-            <li><a href="/add">Add Website</a></li>
-            <li><a href="/rem">Delete Website</a></li>
-            <li><a href="/view">View Website</a></li>
+            <li><a href="/add">Add Doucment</a></li>
+            <li><a href="/rem">Delete Document</a></li>
+            <li><a href="/view">View Documents</a></li>
         </ul><br>
         <h1  style="text-align:center">Add Doucment</h1><br>
         <h1>Select Options</h1>
+        <!--
+        {
+            “names” {
+                “common_name”,
+                “genus_name”,
+                “species_name”
+            },
+            “nat_habitat” {
+                “native_regions”: [],
+                “known_locations”: [
+                {
+                    “location_name”,
+                    “country”,
+                    “latitude”,
+                    “longitude”
+                },
+                {
+                <additional locations>
+                }
+                ],
+                “habitat_desc”
+            },
+            “diet”,
+            “avg_lifespan”,
+            “phys_features”: {
+                “height”,
+                “wingspan”,
+                “weight”,
+                “beak_type”,
+                “phys_desc”
+            },
+            “behavior”: {
+                descriptors: [],
+                behavior_description
+            },
+            “conservation_status”: {
+                “category”,
+                “last_updated”
+            }
+        }
+
+
+        -->
         <form>
-            <label for="dropdown1">Dropdown 1:</label>
-            <select id="dropdown1" name="dropdown1">
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
+            <!--
+                Name:
+                    common_name
+                    genus_name
+                    species_name
+            -->
+            <label for="names">names:</label><br>
+            <!--
+                common_name
+            -->
+            <label for="common_name">common_name:</label>
+            <select id="common_name" name="common_name">
+                {%for common_name in common_name%}
+                    <option value="{{common_name}}">{{common_name}}</option>
+                {%endfor%}
             </select>
             <br>
-            
-            <label for="dropdown2">Dropdown 2:</label>
-            <select id="dropdown2" name="dropdown2">
+            <!--
+                genus_name
+            -->
+            <label for="genus_name">genus_name:</label>
+            <select id="genus_name" name="genus_name">
                 <option value="optionA">Option A</option>
                 <option value="optionB">Option B</option>
                 <option value="optionC">Option C</option>
             </select>
             <br>
-            
-            <label for="dropdown3">Dropdown 3:</label>
-            <select id="dropdown3" name="dropdown3">
+            <!--
+                species_name
+            -->
+            <label for="species_name">species_name:</label>
+            <select id="species_name" name="species_name">
                 <option value="itemX">Item X</option>
                 <option value="itemY">Item Y</option>
                 <option value="itemZ">Item Z</option>
             </select>
             <br>
+            <!--
+                nat_habitat{
+                    native_region: []
+                    known_locations:[
+                    {
+                        "location_name"
+                        "country"
+                        "latitude"
+                        "Longitude"
+                    },
+                    {additional location}
+                    ]
+                }
+            -->
+            <!--
+                native_region
+            -->
+            <label for="native_habitat">native_habitat</label><br>
             
-            <label for="dropdown4">Dropdown 4:</label>
-            <select id="dropdown4" name="dropdown4">
-                <option value="choice1">Choice 1</option>
-                <option value="choice2">Choice 2</option>
-                <option value="choice3">Choice 3</option>
+            <label for="native_region">native_region</label><br>
+            <select id="native_region" name="native_region">
+                <option value="north_america">North America</option>
+                <option value="south_america">South America</option>
+                <option value="europe">Europe</option>
+                <option value="africa">Africa</option>
+                <option value="asia">Asia</option>
+                <option value="australia">Australia</option>
+                <option value="antartica">Antartica</option>
             </select>
             <br>
-
-            <label for="textbox1">Textbox 1:</label>
-            <input type="text" id="textbox1" name="textbox1" placeholder="Enter text for textbox 1">
+            <!--
+                known_locations: [
+                    ...,
+                    ...,
+                    ...,
+                    ...
+                
+                ]
+            -->
+            <!--
+                location_name: (forest, desert, wetland, etc...)
+            -->
+            <label for="known_locations">Known Locations:</label><br>
+            
+            <label for="climate">location_name</label><br>
+            <select id="climate" name="climate">
+                {%for climate in climate_list%}
+                    <option value="{{climate}}">{{climate}}</option>
+                {% endfor %}
+            </select>
             <br>
+            
 
-            <label for="textbox2">Textbox 2:</label>
-            <input type="text" id="textbox2" name="textbox2" placeholder="Enter text for textbox 2">
             <br>
+            <!--
+                country: should be dropdown
+            -->
+            <label for="country">country</label><br>
+            
+            <select id="country" name="country">
 
-            <label for="textbox3">Textbox 3:</label>
-            <input type="text" id="textbox3" name="textbox3" placeholder="Enter text for textbox 3">
+                {%for country in country_list%}
+                    <option value="{{country}}">{{country}}</option>
+                {% endfor %}
+            </select>
             <br>
-
-            <label for="textbox4">Textbox 4:</label>
-            <input type="text" id="textbox4" name="textbox4" placeholder="Enter text for textbox 4">
+            <!--
+                latitude
+            -->
+            <label for="latitude">latitude:</label>
+            <input type="text" id="latitude" name="latitude" placeholder="Ex:40.753°N">
+            <br>
+            <!--
+                Longitude
+            -->
+            <label for="longitude">longitude:</label>
+            <input type="text" id="longitude" name="longitude" placeholder="Ex:73.983°W">
             <br>
 
             <label for="checkbox1">

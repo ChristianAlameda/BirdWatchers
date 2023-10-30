@@ -32,10 +32,10 @@ class MyFlaskApp:
         colors_list = ['Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Brown', 'Black', 'White', 'Gray', 'Cyan', 'Magenta', 'Teal', 'Lavender', 'Maroon', 'Indigo', 'Turquoise', 'Gold', 'Silver']
         feather_type_list = ['Contour feathers', 'Down feathers', 'Semiplume feathers', 'Filoplume feathers', 'Bristle feathers', 'Aftershaft feathers', 'Flight feathers', 'Tail feathers', 'Coverts (wing and tail)', 'Tertiary feathers', 'Scapular feathers', 'Auricular feathers', 'Rictal bristles', 'Eyebrow feathers', 'Nuptial plumage', 'Brood patch feathers', 'Powder down feathers', 'Crest feathers', 'Hackles (neck feathers)', 'Speculum feathers (often found in ducks)']
         behavior_description_list = ['Migratory', 'Territorial', 'Cannibalistic', 'Nesting', 'Courtship', 'Parental', 'Aggressive', 'Flocking', 'Camouflaging', 'Tool Use']
+        concern_list = ['Least Concern (LC)', 'Near Threatened (NT)', 'Vulnerable (VU)', 'Endangered (EN)', 'Critically Endangered (CR)', 'Extinct in the Wild (EW)', 'Extinct (EX)', 'Data Deficient (DD)', 'Not Evaluated (NE)']
         
         
-        
-        return render_template('add.html', common_names_list=common_names_list, genus_names_list=genus_names_list, species_names_list=species_names_list, native_regions_list=native_regions_list, climate_list=climate_list, country_list=country_list, diet_list=diet_list, beak_description_list=beak_description_list, colors_list=colors_list, feather_type_list=feather_type_list, behavior_description_list=behavior_description_list)
+        return render_template('add.html', common_names_list=common_names_list, genus_names_list=genus_names_list, species_names_list=species_names_list, native_regions_list=native_regions_list, climate_list=climate_list, country_list=country_list, diet_list=diet_list, beak_description_list=beak_description_list, colors_list=colors_list, feather_type_list=feather_type_list, behavior_description_list=behavior_description_list, concern_list=concern_list)
 
     def rem(self):
         return render_template('rem.html', x="hello")

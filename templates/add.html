@@ -292,9 +292,17 @@
             <!--
                 category
             -->
+            <label for="concern">concern:</label>
+            <select id="concern" name="concern">
+                {%for concern in concern_list%}
+                    <option value="{{concern}}">{{concern}}</option>
+                {% endfor %}
+            </select><br>
             <!--
                 last_updated
             -->
+            <label for="last_updated">last_updated:</label>
+            <input type="date" id="last_updated" name="last_updated"><br>
             
             <input type="submit" value="Submit">
         </form>

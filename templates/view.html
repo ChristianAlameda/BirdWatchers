@@ -13,5 +13,9 @@
             <li><a href="/view">View Documents</a></li>
         </ul><br>
         <h1  style="text-align:center">View Documents</h1><br>
+        all posts: {{all_posts}}<br>
+            document in all_posts{%for document in all_posts%}
+                {{document}}<br>
+            {%endfor%}
     </body>
 </html>

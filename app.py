@@ -55,8 +55,6 @@ class MyFlaskApp:
         data = request.json  # Access the JSON data sent in the POST request
 
         # Process and store the data as needed
-        # For demonstration, we'll simply print the data to the console
-        print(data)
         #iterate throught the forms
         for i in data: 
             common_name =i['common_name'] 
@@ -117,79 +115,17 @@ class MyFlaskApp:
             }
             self.database.insertPost(insertion)
             print('entry entered')
-        
-        
-        
-        
-        
-        # common_name = request.form['common_name']
-        # genus_name = request.form['genus_name']
-        # species_name = request.form['species_name']
-        # native_region = request.form['native_region']
-        # country = request.form['country']
-        # climate = request.form['climate']
-        # latitude = request.form['latitude']
-        # longitude = request.form['longitude']
-        # diet = request.form['diet']
-        # avg_lifespan = request.form['avg_lifespan']
-        # height = request.form['height']
-        # weight = request.form['weight']
-        # wingspan = request.form['wingspan']
-        # beak_description = request.form['beak_description']
-        # color = request.form['color']
-        # feather_type = request.form['feather_type']
-        # behavior_description = request.form['behavior_description']
-        # concern = request.form['concern']
-        # last_updated = request.form['last_updated']
-        # insertion = {
-        #     "names": {
-        #         "common_name": common_name,
-        #         "genus_name":genus_name,
-        #         "species_name":species_name
-        #     },
-        #     "nat_habitat": {
-        #         "native_regions": native_region,
-        #         "known_locations": [
-        #             {
-        #                 "country":country,
-        #                 "latitude":latitude,
-        #                 "longitude":longitude
-        #             },
-        #             # Additional locations here
-        #         ],
-        #         "habitat_desc":climate
-        #     },
-        #     "diet":diet,  
-        #     "avg_lifespan":avg_lifespan,  
-        #     "phys_features": {
-        #         "height":height,
-        #         "weight":weight,
-        #         "wingspan":wingspan,
-        #         "beak_description":beak_description,
-        #         "feather_type":feather_type,
-        #         "color":color          
-        #     },
-        #     "behavior": {
-        #         "behavior_description":behavior_description
-        #     },
-        #     "conservation_status": {
-        #         "concern": concern,
-        #         "last_updated":last_updated
-        #     }
-        # }
-        
-            
+
         return "YOU HAVE SUCCESSFULLY ADDED A DOCUMENT PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='../'>Visit Homepage</a>" 
     
     def rem(self):
-        return render_template('rem.html', x="hello")
+        return render_template('rem.html', all_posts=self.database.getPosts({}))
     
     def new_removed_document(self):
         return "YOU HAVE SUCCESSFULLY REMOVED A DOCUMENT PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='../'>Visit Homepage</a>" 
 
     def view(self):
-        allPosts = self.databaseClass.getPosts({})
-        return render_template('view.html', allPosts=allPosts)
+        return render_template('view.html', all_posts=self.database.getPosts({}))
 
 if __name__ == "__main__":
     x = MyFlaskApp()

@@ -1,5 +1,5 @@
 #pip install flask 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from database import Database
 import requests
 #pip install requests
@@ -52,62 +52,133 @@ class MyFlaskApp:
         return render_template('add.html', common_names_list=common_names_list, genus_names_list=genus_names_list, species_names_list=species_names_list, native_regions_list=native_regions_list, climate_list=climate_list, country_list=country_list, diet_list=diet_list, beak_description_list=beak_description_list, colors_list=colors_list, feather_type_list=feather_type_list, behavior_description_list=behavior_description_list, concern_list=concern_list)
 
     def new_added_document(self):
-        common_name = request.form['common_name']
-        genus_name = request.form['genus_name']
-        species_name = request.form['species_name']
-        native_region = request.form['native_region']
-        country = request.form['country']
-        climate = request.form['climate']
-        latitude = request.form['latitude']
-        longitude = request.form['longitude']
-        diet = request.form['diet']
-        avg_lifespan = request.form['avg_lifespan']
-        height = request.form['height']
-        weight = request.form['weight']
-        wingspan = request.form['wingspan']
-        beak_description = request.form['beak_description']
-        color = request.form['color']
-        feather_type = request.form['feather_type']
-        behavior_description = request.form['behavior_description']
-        concern = request.form['concern']
-        last_updated = request.form['last_updated']
-        insertion = {
-            "names": {
-                "common_name": common_name,
-                "genus_name":genus_name,
-                "species_name":species_name
-            },
-            "nat_habitat": {
-                "native_regions": native_region,
-                "known_locations": [
-                    {
-                        "country":country,
-                        "latitude":latitude,
-                        "longitude":longitude
-                    },
-                    # Additional locations here
-                ],
-                "habitat_desc":climate
-            },
-            "diet":diet,  
-            "avg_lifespan":avg_lifespan,  
-            "phys_features": {
-                "height":height,
-                "weight":weight,
-                "wingspan":wingspan,
-                "beak_description":beak_description,
-                "feather_type":feather_type,
-                "color":color          
-            },
-            "behavior": {
-                "behavior_description":behavior_description
-            },
-            "conservation_status": {
-                "concern": concern,
-                "last_updated":last_updated
+        data = request.json  # Access the JSON data sent in the POST request
+
+        # Process and store the data as needed
+        # For demonstration, we'll simply print the data to the console
+        print(data)
+        #iterate throught the forms
+        for i in data: 
+            common_name =i['common_name'] 
+            genus_name =i['genus_name'] 
+            species_name =i['species_name'] 
+            native_region =i['native_region'] 
+            country =i['country'] 
+            climate =i['climate'] 
+            latitude =i['latitude'] 
+            longitude =i['longitude'] 
+            diet =i['diet'] 
+            avg_lifespan =i['avg_lifespan'] 
+            height =i['height'] 
+            weight =i['weight'] 
+            wingspan =i['wingspan'] 
+            beak_description =i['beak_description'] 
+            color = i['color'] 
+            feather_type =i['feather_type'] 
+            behavior_description = i['behavior_description'] 
+            concern =i['concern'] 
+            last_updated =i['last_updated'] 
+            
+            insertion = {
+                "names": {
+                    "common_name": common_name,
+                    "genus_name":genus_name,
+                    "species_name":species_name
+                },
+                "nat_habitat": {
+                    "native_regions": native_region,
+                    "known_locations": [
+                        {
+                            "country":country,
+                            "latitude":latitude,
+                            "longitude":longitude
+                        },
+                        # Additional locations here
+                    ],
+                    "habitat_desc":climate
+                },
+                "diet":diet,  
+                "avg_lifespan":avg_lifespan,  
+                "phys_features": {
+                    "height":height,
+                    "weight":weight,
+                    "wingspan":wingspan,
+                    "beak_description":beak_description,
+                    "feather_type":feather_type,
+                    "color":color          
+                },
+                "behavior": {
+                    "behavior_description":behavior_description
+                },
+                "conservation_status": {
+                    "concern": concern,
+                    "last_updated":last_updated
+                }
             }
-        }
-        self.database.insertPost(insertion)
+            self.database.insertPost(insertion)
+            print('entry entered')
+        
+        
+        
+        
+        
+        # common_name = request.form['common_name']
+        # genus_name = request.form['genus_name']
+        # species_name = request.form['species_name']
+        # native_region = request.form['native_region']
+        # country = request.form['country']
+        # climate = request.form['climate']
+        # latitude = request.form['latitude']
+        # longitude = request.form['longitude']
+        # diet = request.form['diet']
+        # avg_lifespan = request.form['avg_lifespan']
+        # height = request.form['height']
+        # weight = request.form['weight']
+        # wingspan = request.form['wingspan']
+        # beak_description = request.form['beak_description']
+        # color = request.form['color']
+        # feather_type = request.form['feather_type']
+        # behavior_description = request.form['behavior_description']
+        # concern = request.form['concern']
+        # last_updated = request.form['last_updated']
+        # insertion = {
+        #     "names": {
+        #         "common_name": common_name,
+        #         "genus_name":genus_name,
+        #         "species_name":species_name
+        #     },
+        #     "nat_habitat": {
+        #         "native_regions": native_region,
+        #         "known_locations": [
+        #             {
+        #                 "country":country,
+        #                 "latitude":latitude,
+        #                 "longitude":longitude
+        #             },
+        #             # Additional locations here
+        #         ],
+        #         "habitat_desc":climate
+        #     },
+        #     "diet":diet,  
+        #     "avg_lifespan":avg_lifespan,  
+        #     "phys_features": {
+        #         "height":height,
+        #         "weight":weight,
+        #         "wingspan":wingspan,
+        #         "beak_description":beak_description,
+        #         "feather_type":feather_type,
+        #         "color":color          
+        #     },
+        #     "behavior": {
+        #         "behavior_description":behavior_description
+        #     },
+        #     "conservation_status": {
+        #         "concern": concern,
+        #         "last_updated":last_updated
+        #     }
+        # }
+        
+            
         return "YOU HAVE SUCCESSFULLY ADDED A DOCUMENT PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='../'>Visit Homepage</a>" 
     
     def rem(self):

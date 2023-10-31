@@ -57,7 +57,7 @@
 
 
         -->
-        <form>
+        <form action="add/new_added_document" method="POST">
             <!--
                 Name:
                     common_name
@@ -89,7 +89,7 @@
                 species_name
             -->
             <label for="species_name">species_name:</label>
-            <select id="species_name" name="species_names_list">
+            <select id="species_name" name="species_name">
                 {%for species_name in species_names_list%}
                     <option value="{{species_name}}">{{species_name}}</option>
                 {%endfor%}

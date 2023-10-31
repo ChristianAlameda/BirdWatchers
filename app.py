@@ -1,6 +1,9 @@
 #pip install flask 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from database import Database
+import requests
+#pip install requests
+
 
 class MyFlaskApp:
     def __init__(self):
@@ -13,9 +16,20 @@ class MyFlaskApp:
 
         # Add routes to the app
         self.app.add_url_rule('/', 'index', self.index)
+        #ADDING
         self.app.add_url_rule('/add', 'add', self.add)
+        self.app.add_url_rule('/add/new_added_document', 'new_added_document', self.new_added_document, methods=['POST'])
+        #REMOVING
         self.app.add_url_rule('/rem', 'rem', self.rem)
+        self.app.add_url_rule('/rem/new_removed_document', 'new_removed_document', self.new_removed_document, methods=['POST'])
+        
+        #VIEWING
         self.app.add_url_rule('/view', 'view', self.view)
+        
+        
+        #CLASS INITIALIZATION
+        self.database = Database()
+        self.database.connect()
 
     def index(self):
         return render_template('home.html')
@@ -37,8 +51,70 @@ class MyFlaskApp:
         
         return render_template('add.html', common_names_list=common_names_list, genus_names_list=genus_names_list, species_names_list=species_names_list, native_regions_list=native_regions_list, climate_list=climate_list, country_list=country_list, diet_list=diet_list, beak_description_list=beak_description_list, colors_list=colors_list, feather_type_list=feather_type_list, behavior_description_list=behavior_description_list, concern_list=concern_list)
 
+    def new_added_document(self):
+        common_name = request.form['common_name']
+        genus_name = request.form['genus_name']
+        species_name = request.form['species_name']
+        native_region = request.form['native_region']
+        country = request.form['country']
+        climate = request.form['climate']
+        latitude = request.form['latitude']
+        longitude = request.form['longitude']
+        diet = request.form['diet']
+        avg_lifespan = request.form['avg_lifespan']
+        height = request.form['height']
+        weight = request.form['weight']
+        wingspan = request.form['wingspan']
+        beak_description = request.form['beak_description']
+        color = request.form['color']
+        feather_type = request.form['feather_type']
+        behavior_description = request.form['behavior_description']
+        concern = request.form['concern']
+        last_updated = request.form['last_updated']
+        insertion = {
+            "names": {
+                "common_name": common_name,
+                "genus_name":genus_name,
+                "species_name":species_name
+            },
+            "nat_habitat": {
+                "native_regions": native_region,
+                "known_locations": [
+                    {
+                        "country":country,
+                        "latitude":latitude,
+                        "longitude":longitude
+                    },
+                    # Additional locations here
+                ],
+                "habitat_desc":climate
+            },
+            "diet":diet,  
+            "avg_lifespan":avg_lifespan,  
+            "phys_features": {
+                "height":height,
+                "weight":weight,
+                "wingspan":wingspan,
+                "beak_description":beak_description,
+                "feather_type":feather_type,
+                "color":color          
+            },
+            "behavior": {
+                "behavior_description":behavior_description
+            },
+            "conservation_status": {
+                "concern": concern,
+                "last_updated":last_updated
+            }
+        }
+        self.database.insertPost(insertion)
+        return "YOU HAVE SUCCESSFULLY ADDED A DOCUMENT PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='../'>Visit Homepage</a>" 
+    
     def rem(self):
         return render_template('rem.html', x="hello")
+    
+    def new_removed_document(self):
+        return "YOU HAVE SUCCESSFULLY REMOVED A DOCUMENT PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='../'>Visit Homepage</a>" 
 
     def view(self):
         allPosts = self.databaseClass.getPosts({})

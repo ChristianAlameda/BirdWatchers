@@ -19,7 +19,12 @@ class Database:
         post_id = self.mycol.insert_many(post).inserted_ids
         
     def getPost(self, query:dict):
-        return self.mycol.find_one(query)
+        # Updated get
+        cursor = self.mycol.find(query)
+        results = list(cursor)
+        return results
+
+        # return self.mycol.find_one(query)     <-- Original return statement
     
     def getPosts(self, query:dict):
         return self.mycol.find(query)

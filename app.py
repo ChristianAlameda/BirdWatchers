@@ -1,8 +1,10 @@
 #pip install flask 
 from flask import Flask, render_template, request, jsonify
 from database import Database
-import requests
 #pip install requests
+import requests
+import json
+
 
 
 class MyFlaskApp:
@@ -22,6 +24,9 @@ class MyFlaskApp:
         #REMOVING
         self.app.add_url_rule('/rem', 'rem', self.rem)
         self.app.add_url_rule('/rem/new_removed_document', 'new_removed_document', self.new_removed_document, methods=['POST'])
+        #IDENTIFYING
+        self.app.add_url_rule('/identify', 'identify', self.identify)
+        self.app.add_url_rule('/identify/id_submission', 'id_submission', self.id_submission, methods=['POST'])
         
         #VIEWING
         self.app.add_url_rule('/view', 'view', self.view)
@@ -123,6 +128,51 @@ class MyFlaskApp:
     
     def new_removed_document(self):
         return "YOU HAVE SUCCESSFULLY REMOVED A DOCUMENT PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='../'>Visit Homepage</a>" 
+    
+    def identify(self):
+        active        = ['Morning','Noon','Afternoon','Evening']
+        beak_type     = ['Filtering', 'Probing', 'Catching Insects', 'Cracking Seeds', 'Tearing Meat', 'Drilling']
+        feather_color = ['Black', 'White', 'Gray', 'Brown', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet']
+
+        return render_template('identify.html', active=active, feather_color=feather_color, beak_type=beak_type)
+    
+    def id_submission(self):
+        # Grab user-selected values from HTML forms
+        active = request.form.get('active')
+        feather_color = request.form.getlist('feather_color')
+        beak_type = request.form.get('beak_type')
+
+        # Convert time of day to corresponding value in DB
+        if active in ['Morning', 'Noon', 'Afternoon']:
+            active = 'Diurnal'
+        elif active == 'Evening':
+            active = 'Nocturnal'
+
+        # Construct query object
+        query = {
+            "phys_features.plumage_color": {"$in": feather_color},
+            "phys_features.beak_type": beak_type,
+            "active": active
+        }
+        
+        # Perform query and store results in results
+        results = self.database.getPosts(query)
+
+        results_list = [doc for doc in results]
+
+        for result in results_list:
+            result['_id'] = str(result['_id'])
+
+        json_results = json.dumps(results_list)
+
+        # Print to console for debugging
+        print("Active:", active)
+        print("Feather Color:", feather_color)
+        print("Beak Type:", beak_type)
+        print("Query:", query)
+        print("Results:", json_results)
+
+        return json_results
 
     def view(self):
         return render_template('view.html', all_posts=self.database.getPosts({}))

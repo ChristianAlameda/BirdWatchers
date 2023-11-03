@@ -9,8 +9,8 @@ class Database:
     
     def connect(self):
         self.myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-        self.mydb = self.myclient["mydatabase"]
-        self.mycol = self.mydb["customers"]
+        self.mydb = self.myclient["BirdWatchers_Test"]
+        self.mycol = self.mydb["BW_Test"]
         
     def insertPost(self, post:dict):
         post_id = self.mycol.insert_one(post).inserted_id
@@ -19,12 +19,7 @@ class Database:
         post_id = self.mycol.insert_many(post).inserted_ids
         
     def getPost(self, query:dict):
-        # Updated get
-        cursor = self.mycol.find(query)
-        results = list(cursor)
-        return results
-
-        # return self.mycol.find_one(query)     <-- Original return statement
+        return self.mycol.find_one(query)
     
     def getPosts(self, query:dict):
         return self.mycol.find(query)

@@ -156,7 +156,8 @@ class MyFlaskApp:
         }
         
         # Perform query and store results in results
-        results = self.database.getPosts(query)
+        results = list(self.database.getPosts(query))
+
 
         results_list = [doc for doc in results]
 

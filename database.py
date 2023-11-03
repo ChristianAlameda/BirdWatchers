@@ -40,6 +40,8 @@ class Database:
     
     def deletePosts(self,query:dict):
         self.mycol.delete_many(query)
+    
+    
         
 # x = Database()
 # x.connect()

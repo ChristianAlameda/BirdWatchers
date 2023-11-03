@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- style for radio buttons is WIP, disregard -->
+<style>
+    .radio-container {
+        display: inline-flex;
+        align-items: center;
+    }
+    /*
+    .radio-image {
+        width: 50px;
+        height: 50px;
+    }
+    */
+    .radio-label {
+        margin-right: 20px;
+    }
+    
+</style>
+</head>
+<body>
+
+    <h1>Bird Identity Search</h1>
+
+    <p>Select characteristics below:</p>
+
+    <form action="/identify/id_submission" method="POST" onsubmit="return validateForm()">
+
+        <!-- Dropdown menu for time of day selection -->
+        <label for="active">Time of day:</label>
+            <select id="active" name="active">
+                <option value="" disabled hidden>Select time of day</option>
+                {%for time in active%}
+                    <option value="{{time}}">{{time}}</option>
+                {% endfor %}
+                <br>
+            </select>
+            <div id="active-error" style="color: red;"></div>
+            <br>
+
+        <!-- Checkbox menu for feather color selection -->
+        <label for="feather_color">Feather color(s):</label><br>
+                {%for color in feather_color%}
+                    <input type="checkbox" id="feather_color" name="feather_color" value="{{color}}"
+                    <label for="{{color}}">{{color}}</label><br>
+                {% endfor %}
+
+        <div id="feather-color-error" style="color: red;"></div>
+        <br>
+
+        <!-- Radio button menu for beak type selection -->
+        <label for="beak_type">Beak types:</label><br>
+            {% for beak in beak_type %}
+                <div class="radio-container">
+                    <input type="radio" id="beak_type" name="beak_type" value="{{beak}}">
+                    <label for="{{beak}}">{{beak}}</label><br>
+                </div>
+            {% endfor %}
+
+        <div id="beak-type-error" style="color: red;"></div>
+        <br>
+        
+        <input type="submit" value="Submit">
+
+    </form>
+
+    <script>
+        function validateForm() {
+            var featherColor = document.querySelectorAll('input[name="feather_color"]:checked');
+            var beakType = document.querySelector('input[name="beak_type"]:checked');
+            var active = document.getElementById('active').value;
+            var featherColorError = "";
+            var beakTypeError = "";
+            var activeError = "";
+
+            if (featherColor.length === 0) {
+                featherColorError = "Please select at least one feather color.";
+            }
+            if (beakType === null) {
+                beakTypeError = "Please select a beak type.";
+            }
+            if (active === '') {
+                activeError = "Please select a time of day.";
+            }
+
+            document.getElementById('feather-color-error').innerText = featherColorError;
+            document.getElementById('beak-type-error').innerText = beakTypeError;
+            document.getElementById('active-error').innerText = activeError;
+        }
+    </script>
+
+</body>
+</html>

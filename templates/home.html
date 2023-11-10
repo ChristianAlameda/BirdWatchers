@@ -1,19 +1,7 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Home Page</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <ul>
-            <li><a class="current" href="/">Home</a></li>
-            <li><a href="/add">Add Doucment</a></li>
-            <li><a href="/rem">Delete Document</a></li>
-            <li><a href="/view">View Documents</a></li>
-            <li><a href="/identify">Identify Bird</a></li>
-            
-        </ul><br>
-        <h1  style="text-align:center">HOMEPAGE</h1><br>
-    </body>
-</html>
+{% extends "base.html" %}
+
+<!--{% block title %}Home - My Website{% endblock %}-->
+
+{% block content %}
+    <h1 style="text-align:center">HOME</h1>
+{% endblock %}

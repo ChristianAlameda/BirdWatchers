@@ -1,3 +1,9 @@
+{% extends "base.html" %}
+
+<!--{% block title %}Home - My Website{% endblock %}-->
+
+{% block content %}
+    
 <!DOCTYPE html>
 <html>
     <head>
@@ -52,14 +58,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <ul>
-            <li><a class="current" href="/">Home</a></li>
-            <li><a href="/add">Add Doucment</a></li>
-            <li><a href="/rem">Delete Document</a></li>
-            <li><a href="/view">View Documents</a></li>
-            <li><a href="/identify">Identify Bird</a></li>
-        </ul><br>
-        <h1  style="text-align:center">Add Doucment</h1><br>
+        <h1  style="text-align:center">Add Document</h1><br>
         <button onclick="addForm()">Add Form</button>
         <button onclick="collectFormData()">Collect Data and Send POST Request</button>
 
@@ -361,3 +360,4 @@
         </div>
     </body>
 </html>
+{% endblock %}

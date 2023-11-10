@@ -1,33 +1,17 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Home Page</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <ul>
-            <li><a class="current" href="/">Home</a></li>
-            <li><a href="/add">Add Doucment</a></li>
-            <li><a href="/rem">Delete Document</a></li>
-            <li><a href="/view">View Documents</a></li>
-            <li><a href="/identify">Identify Bird</a></li>
-            
-        </ul><br>
-        <h1  style="text-align:center">Remove Document</h1><br>
-        <form action="rem/newDeletedDocument" style="background-color:white; display:inline-block" method="POST">
-            <!--
-                Need a name for the respective preset so the user knows what to ask for later
-                Make it easier to recall for them. 
-            -->
-            
-            <div style="background:black;color:white;">FROM THIS LIST PICK WHICH ONES YOU WOULD LIKE TO DELETE</div>
-            <br><br>
-            all posts: {{all_posts}}<br>
-            document in all_posts{%for document in all_posts%}
-                {{document}}<br>
-            {%endfor%}
-            
-        </form>
-    </body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Remove Document - My Website{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">Remove Document</h1><br>
+    <form action="rem/newDeletedDocument" style="background-color:white; display:inline-block" method="POST">
+        <!-- Need a name for the respective preset so the user knows what to ask for later -->
+        <!-- Make it easier to recall for them. -->
+        <div style="background:black;color:white;">FROM THIS LIST PICK WHICH ONES YOU WOULD LIKE TO DELETE</div><br><br>
+        all posts: {{ all_posts }}<br>
+        document in all_posts
+        {% for document in all_posts %}
+            {{ document }}<br>
+        {% endfor %}
+    </form>
+{% endblock %}

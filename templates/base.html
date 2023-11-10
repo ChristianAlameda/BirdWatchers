@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}My Website{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>BIRD WATCHERS</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a class="current" href="/">Home</a></li>
+            <li><a href="/add">Add Doucment</a></li>
+            <li><a href="/rem">Delete Document</a></li>
+            <li><a href="/view">View Documents</a></li>
+            <li><a href="/identify">Identify Bird</a></li>
+            
+        </ul><br>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

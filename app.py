@@ -5,6 +5,7 @@ from database import Database
 from userDatabase import UserDatabase
 import bcrypt
 import json
+import re
 
 class MyFlaskApp:
     def __init__(self):
@@ -169,33 +170,61 @@ class MyFlaskApp:
 
         # Construct query object
         query = {
-            "phys_features.plumage_color": {"$in": feather_color},
+            "phys_features.feather_color": {"$in": feather_color},
             "phys_features.beak_type": beak_type,
             "active": active
         }
         
         self.database.connect()
         # Perform query and store results in results
-        print(self.database.getPosts(query))
-        results = list(self.database.getPosts(query))
+        
+        results = self.database.getPosts(query)
+        results = self.parseStringToDict(str(results))
+        # results = list(self.database.getPosts(query))
+        print('results','  ', type(results), '   ',results)
 
 
-        results_list = [doc for doc in results]
+        # results_list = [doc for doc in results]
 
-        for result in results_list:
-            result['_id'] = str(result['_id'])
+        # for result in results_list:
+        #     result['_id'] = str(result['_id'])
 
-        json_results = json.dumps(results_list)
-
+        # json_results = json.dumps(results_list)
         # Print to console for debugging
         print("Active:", active)
         print("Feather Color:", feather_color)
         print("Beak Type:", beak_type)
         print("Query:", query)
-        print("Results:", json_results)
+        print("Results:", results)
 
-        return render_template('add.html',json_results=json_results)
+        return render_template('add.html',json_results=results)
 
+    def parseStringToDict(self, stringedDictionary:str):
+        # Define a regular expression pattern to match key-value pairs
+        pattern = r"'(\w+)': (?:'([^']*)'|(?:\[(.*?)\])|(\d+\.\d+)|ObjectId\('([^']*)'\))"
+
+        # Find all key-value pairs in the string
+        matches = re.findall(pattern, stringedDictionary)
+
+        # Create a dictionary from the matches
+        data = {}
+        for key, value_str, list_str, float_str, obj_id in matches:
+            value = value_str if value_str else (list_str.split(', ') if list_str else (float(float_str) if float_str else obj_id))
+            data[key] = value
+        
+        data = self.remove_double_quotes(data)
+        return data
+    
+    def remove_double_quotes(self, item):
+        if isinstance(item, list):
+            return [self.remove_double_quotes(element) for element in item]
+        elif isinstance(item, dict):
+            return {key: self.remove_double_quotes(value) for key, value in item.items()}
+        elif isinstance(item, str):
+            return item.replace('"', '').replace("'", '')  # Remove both double and single quotes
+        else:
+            return item
+    
     def add(self):
         item = request.form.get("selected_items")
         self.user_database.connect(self.curr_email)

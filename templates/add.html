@@ -4,10 +4,10 @@
 
 {% block content %}
     <h1>List of Items</h1>
-    
+    {{json_results}}
     <form action="/add" method="POST">
         <ul>
-            {% for item in item_list %}
+            {% for item in json_results %}
                 <li>
                     <input type="checkbox" name="selected_items" value="{{ item }}" id="{{ item }}">
                     <label for="{{ item }}">{{ item }}</label>

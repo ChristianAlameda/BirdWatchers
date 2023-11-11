@@ -199,7 +199,52 @@ class MyFlaskApp:
         # print("Results:", results)
 
         return render_template('add.html',json_results=results)
+    
+    def add(self):
+        print('here1')
+        item = request.form["selected_items"]
+        item = self.parseStringToDict(item)
+        
+        print('here2')
+        self.user_database.connect(self.curr_email)
+        print('here3')
+        # item = self.catch_duplicate({"item":item})
+        # print("item",'  ',type(item), '  ', item)
+        self.user_database.insertPost({"item":item})
+        return "return YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
+        # if isinstance(item, dict):
+        #     self.user_database.insertPost({"item":item})
+        #     return "return YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
+        # else: 
+        #     return "return YOU HAVE ADDED THAT BIRD ALREADY PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
+        
+    
+    def catch_duplicate(self, item:dict):
+        # see if a user has added a bird that 
+        # he has already added
+        #gives me a string
+        print("item['item']",'  ',type(item['item']), '  ', item['item'])
+        
+        self.user_database.connect(self.curr_email)
+        #remove the newest duplicate
+        posts = self.user_database.getPosts({'item':item})
+        print(posts)
+        cursor_list = list(posts)
+        print(cursor_list)
+        if posts:
+            self.user_database.deletePost(posts)
+            return False
+        else: return item
+        
+    def view(self):
+        return render_template('view.html', all_posts=self.database.getPosts({}))
 
+    #################################
+    #################################
+    ######## HELPER FUCTIONS ########
+    #################################
+    #################################
+    
     def parseStringToDict(self, stringedDictionary:str):
         # Define a regular expression pattern to match key-value pairs
         pattern = r"'(\w+)': (?:'([^']*)'|(?:\[(.*?)\])|(\d+\.\d+)|ObjectId\('([^']*)'\))"
@@ -213,27 +258,19 @@ class MyFlaskApp:
             value = value_str if value_str else (list_str.split(', ') if list_str else (float(float_str) if float_str else obj_id))
             data[key] = value
         
-        data = self.remove_double_quotes(data)
+        # data = self.remove_double_quotes(data)
         return data
     
-    def remove_double_quotes(self, item):
-        if isinstance(item, list):
-            return [self.remove_double_quotes(element) for element in item]
-        elif isinstance(item, dict):
-            return {key: self.remove_double_quotes(value) for key, value in item.items()}
-        elif isinstance(item, str):
-            return item.replace('"', '').replace("'", '')  # Remove both double and single quotes
-        else:
-            return item
-    
-    def add(self):
-        item = request.form.get("selected_items")
-        self.user_database.connect(self.curr_email)
-        self.user_database.insertPost({"item":item})
+    # def remove_double_quotes(self, item):
+    #     if isinstance(item, list):
+    #         return [self.remove_double_quotes(element) for element in item]
+    #     elif isinstance(item, dict):
+    #         return {key: self.remove_double_quotes(value) for key, value in item.items()}
+    #     elif isinstance(item, str):
+    #         return item.replace('"', '').replace("'", '')  # Remove both double and single quotes
+    #     else:
+    #         return item
         
-    def view(self):
-        return render_template('view.html', all_posts=self.database.getPosts({}))
-
 if __name__ == "__main__":
     x = MyFlaskApp()
     x.app.run(host="0.0.0.0", port=7777)

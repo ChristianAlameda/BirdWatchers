@@ -179,9 +179,10 @@ class MyFlaskApp:
         # Perform query and store results in results
         
         results = self.database.getPosts(query)
-        results = self.parseStringToDict(str(results))
+        print(results)
+        #results = self.parseStringToDict(str(results))
         # results = list(self.database.getPosts(query))
-        print('results','  ', type(results), '   ',results)
+        # print('results','  ', type(results), '   ',results)
 
 
         # results_list = [doc for doc in results]
@@ -195,7 +196,7 @@ class MyFlaskApp:
         print("Feather Color:", feather_color)
         print("Beak Type:", beak_type)
         print("Query:", query)
-        print("Results:", results)
+        # print("Results:", results)
 
         return render_template('add.html',json_results=results)
 

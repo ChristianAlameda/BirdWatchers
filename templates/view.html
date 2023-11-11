@@ -3,10 +3,53 @@
 {% block title %}View Documents - My Website{% endblock %}
 
 {% block content %}
-    <h1 style="text-align:center">View Documents</h1><br>
-    all posts: {{ all_posts }}<br>
-    document in all_posts
+    <!DOCTYPE html>
+    <html>
+    <style>
+        
+        /* Apply alternating styles for non-list items */
+        .container {
+            background-color:green;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .item:nth-child(odd) {
+            background-color: black;
+            color: white;
+            padding: 10px;
+            margin: 5px;
+        }
+    
+        .item:nth-child(even) {
+            background-color: white;
+            color: black;
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+    <head>
+          <title>Hi</title>
+    </head>
+    <body>
+    <h1 style="text-align:center">Remove Documents</h1><br>
+    <!--all posts: {{ all_posts }}<br>-->
     {% for document in all_posts %}
-        {{ document }}<br>
+        <div class="container">
+            <div class="item">common_name: {{ document['item']['common_name'] }}</div>
+            <div class="item">genus_name: {{ document['item']['genus_name'] }}</div>
+            <div class="item">species_name: {{ document['item']['species_name'] }}</div>
+            <div class="item">native_regions: {{ document['item']['native_regions'] }}</div>
+            <div class="item">habitat_desc: {{ document['item']['habitat_desc'] }}</div>
+            <div class="item">diet: {{ document['item']['diet'] }}</div>
+            <div class="item">active: {{ document['item']['active'] }}</div>
+            <div class="item">weight: {{ document['item']['weight'] }}</div>
+            <div class="item">descriptors: {{ document['item']['descriptors'] }}</div>
+            <div class="item">behavior_desc: {{ document['item']['behavior_desc'] }}</div>
+        </div>
     {% endfor %}
+    </body>
+    </html>
 {% endblock %}
+

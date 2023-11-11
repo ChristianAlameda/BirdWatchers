@@ -6,6 +6,7 @@ from userDatabase import UserDatabase
 import bcrypt
 import json
 import re
+from bson import ObjectId
 
 class MyFlaskApp:
     def __init__(self):
@@ -144,10 +145,32 @@ class MyFlaskApp:
         return render_template('home.html')
 
     def rem(self):
-        return render_template('rem.html', all_posts=self.database.getPosts({}))
+        self.user_database.connect(self.curr_email)
+        all_posts = self.user_database.getPosts({})
+        # print(all_posts[0])
+        all_posts_list = []
+        for i in all_posts:
+            all_posts_list.append(i)
+            
+        if all_posts == None:
+            message = "You do not currently have any items in your collection yet please go back to the homeapge<br><br><a href='home'>Visit Homepage</a>"
+            return message
+        else:
+            return render_template('rem.html', all_posts=all_posts_list)
     
     def new_removed_document(self):
-        return "YOU HAVE SUCCESSFULLY REMOVED A DOCUMENT PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='../'>Visit Homepage</a>" 
+        self.user_database.connect(self.curr_email)
+        posts = request.form.getlist('document')
+        print(posts)
+        if len(posts) == 1:
+            self.user_database.deletePost({'_id':ObjectId(posts[0])})
+            return "YOU HAVE SUCCESSFULLY REMOVED A DOCUMENT PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>" 
+        if len(posts) == 0:
+            return "YOU HAVE NO ITEMS IN THE LIST PLEASE RETURN TO HOMEPAGE<br><br><a href='home'>Visit Homepage</a>" 
+        else:
+            for i in posts:
+                self.user_database.deletePosts({'_id':ObjectId(posts[i])})
+            return "YOU HAVE SUCCESSFULLY REMOVED SEVERAL DOCUMENTS PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>" 
     
     def identify(self):
         active        = ['Morning','Noon','Afternoon','Evening']
@@ -179,23 +202,11 @@ class MyFlaskApp:
         # Perform query and store results in results
         
         results = self.database.getPosts(query)
-        print(results)
-        #results = self.parseStringToDict(str(results))
-        # results = list(self.database.getPosts(query))
-        # print('results','  ', type(results), '   ',results)
-
-
-        # results_list = [doc for doc in results]
-
-        # for result in results_list:
-        #     result['_id'] = str(result['_id'])
-
-        # json_results = json.dumps(results_list)
-        # Print to console for debugging
-        print("Active:", active)
-        print("Feather Color:", feather_color)
-        print("Beak Type:", beak_type)
-        print("Query:", query)
+        # print(results)
+        # print("Active:", active)
+        # print("Feather Color:", feather_color)
+        # print("Beak Type:", beak_type)
+        # print("Query:", query)
         # print("Results:", results)
 
         return render_template('add.html',json_results=results)
@@ -211,7 +222,7 @@ class MyFlaskApp:
         # item = self.catch_duplicate({"item":item})
         # print("item",'  ',type(item), '  ', item)
         self.user_database.insertPost({"item":item})
-        return "return YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
+        return "YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
         # if isinstance(item, dict):
         #     self.user_database.insertPost({"item":item})
         #     return "return YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
@@ -219,25 +230,21 @@ class MyFlaskApp:
         #     return "return YOU HAVE ADDED THAT BIRD ALREADY PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
         
     
-    def catch_duplicate(self, item:dict):
-        # see if a user has added a bird that 
-        # he has already added
-        #gives me a string
-        print("item['item']",'  ',type(item['item']), '  ', item['item'])
-        
-        self.user_database.connect(self.curr_email)
-        #remove the newest duplicate
-        posts = self.user_database.getPosts({'item':item})
-        print(posts)
-        cursor_list = list(posts)
-        print(cursor_list)
-        if posts:
-            self.user_database.deletePost(posts)
-            return False
-        else: return item
+    
         
     def view(self):
-        return render_template('view.html', all_posts=self.database.getPosts({}))
+        self.user_database.connect(self.curr_email)
+        all_posts = self.user_database.getPosts({})
+        # print(all_posts[0])
+        all_posts_list = []
+        for i in all_posts:
+            all_posts_list.append(i)
+            
+        if all_posts == None:
+            message = "You do not currently have any items in your collection yet please go back to the homeapge<br><br><a href='home'>Visit Homepage</a>"
+            return message
+        else:
+            return render_template('view.html', all_posts=all_posts_list)
 
     #################################
     #################################
@@ -261,6 +268,23 @@ class MyFlaskApp:
         # data = self.remove_double_quotes(data)
         return data
     
+    def catch_duplicate(self, item:dict):
+        # see if a user has added a bird that 
+        # he has already added
+        #gives me a string
+        print("item['item']",'  ',type(item['item']), '  ', item['item'])
+        
+        self.user_database.connect(self.curr_email)
+        #remove the newest duplicate
+        posts = self.user_database.getPosts({'item':item})
+        print(posts)
+        cursor_list = list(posts)
+        print(cursor_list)
+        if posts:
+            self.user_database.deletePost(posts)
+            return False
+        else: return item
+        
     # def remove_double_quotes(self, item):
     #     if isinstance(item, list):
     #         return [self.remove_double_quotes(element) for element in item]

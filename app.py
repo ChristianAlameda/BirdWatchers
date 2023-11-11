@@ -1,13 +1,10 @@
 #pip install flask 
+#pip install requests
 from flask import Flask, render_template, request, url_for, redirect, session, jsonify
 from database import Database
 from userDatabase import UserDatabase
 import bcrypt
-
-#pip install requests
 import json
-
-
 
 class MyFlaskApp:
     def __init__(self):
@@ -21,9 +18,6 @@ class MyFlaskApp:
         self.app.add_url_rule('/logout', 'logout', self.logout, methods=['POST', 'GET'])
         self.app.add_url_rule('/', 'index', self.index, methods=['POST', 'GET'])
         
-        
-        
-
         # Add routes to the app
         #Changed to home from /
         self.app.add_url_rule('/home', 'home', self.home)
@@ -57,8 +51,8 @@ class MyFlaskApp:
 
     def index(self):
         message = ''
-        if "email" in session:
-            return redirect(url_for("logged_in"))
+        # if "email" in session:
+        #     return redirect(url_for("logged_in"))
         if request.method == "POST":
             user = request.form.get("fullname")
             email = request.form.get("email")
@@ -77,8 +71,8 @@ class MyFlaskApp:
     
     def login(self):
         message = 'Please login to your account'
-        if "email" in session:
-            return redirect(url_for("logged_in"))
+        # if "email" in session:
+        #     return redirect(url_for("logged_in"))
 
         if request.method == "POST":
             email = request.form.get("email")

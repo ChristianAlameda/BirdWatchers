@@ -46,33 +46,33 @@ class Database:
 # x = Database()
 # x.connect()
 
-class checkDatabase:
-    def __init__(self):
-        self.x = Database()
-        self.x.connect()
+# class checkDatabase:
+#     def __init__(self):
+#         self.x = Database()
+#         self.x.connect()
     
-    def check_insertPost(self):
-        dict = {"name":"Jill"}
-        self.x.insertPost(dict)
+#     def check_insertPost(self):
+#         dict = {"name":"Jill"}
+#         self.x.insertPost(dict)
         
-    def check_insertPosts(self):
-        mydict = [
-            { "name": "Dan", "address": "Taco 4251" },
-            { "name": "Calvin", "address": "Taco 4251" },
-            { "name": "Alvin", "address": "Taco 4251" },
-            { "name": "Dalvin", "address": "Taco 4251" }
-        ]
-        self.x.insertPosts(mydict)
-    def check_deletePost(self):
-        self.x.deletePosts({})
-        print(x.getPost({"name":"Dan"}))
-        print(x.getPost({"name":"Dan"})["name"])
+#     def check_insertPosts(self):
+#         mydict = [
+#             { "name": "Dan", "address": "Taco 4251" },
+#             { "name": "Calvin", "address": "Taco 4251" },
+#             { "name": "Alvin", "address": "Taco 4251" },
+#             { "name": "Dalvin", "address": "Taco 4251" }
+#         ]
+#         self.x.insertPosts(mydict)
+#     def check_deletePost(self):
+#         self.x.deletePosts({})
+#         print(x.getPost({"name":"Dan"}))
+#         print(x.getPost({"name":"Dan"})["name"])
 
-    def input_dict(self):
-        name = input("enter your name\nname : ")
-        address = input("enter your address\naddress : ")
+#     def input_dict(self):
+#         name = input("enter your name\nname : ")
+#         address = input("enter your address\naddress : ")
         
-        self.x.insertPost({"name":name, "address":address})
+#         self.x.insertPost({"name":name, "address":address})
         
-x = checkDatabase()
-x.check_insertPost()
+# x = checkDatabase()
+# x.check_insertPost()

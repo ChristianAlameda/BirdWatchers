@@ -3,89 +3,250 @@
 {% block title %}Bird Identity Search - My Website{% endblock %}
 
 {% block content %}
-    <style>
-        /* Internal CSS specific to this block content */
-        .radio-container {
-            display: inline-flex;
-            align-items: center;
-        }
 
-        /* Commented out styles (if you need them) */
-        .radio-image {
-            width: 50px;
-            height: 50px;
-        }
-        
+        <style>
+            /* Internal CSS specific to this block content */
+            .size-container {
+                display: flex;
+                /* flex-direction: row; */
+                flex-wrap: wrap;
+            }
 
-        .radio-label {
-            margin-right: 20px;
-        }
-    </style>
-    <h1>Bird Identity Search</h1>
+            .size-image-beaktype {
+                width: 200px; /* Set the desired width */
+                height: auto; /* Maintain the aspect ratio */
+            }
 
-    <p>Select characteristics below:</p>
+            .size-image-birdsize {
+                width: 100px; /* Set the desired width */
+                height: auto; /* Maintain the aspect ratio */
+            }
 
-    <form action="/identify/id_submission" method="POST" onsubmit="return validateForm()">
+            .radio-container {
+                display: flex;
+                flex-direction: column; /* Align items in a column */
+                align-items: center; /* Center items horizontally */
+                margin-right: 20px; /* Adjust the spacing between radio buttons */
+            }
 
-        <!-- Dropdown menu for time of day selection -->
-        <label for="active">Time of day:</label>
-        <select id="active" name="active">
-            <option value="" disabled hidden>Select time of day</option>
-            {% for time in active %}
-                <option value="{{ time }}">{{ time }}</option>
+            .image-container {
+                margin-bottom: 5px; /* Adjust the spacing between image and radio button */
+            }
+
+            input[type="submit"] {
+                display: block;
+                margin: 0 auto;
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+
+            .button {
+                display: inline-block;
+                padding: 4px 8px;
+                margin: 10px 0;
+                font-size: 13px;
+                font-weight: 400;
+                line-height: 1.42857143;
+                text-align: center;
+                text-decoration: none;
+                white-space: nowrap;
+                vertical-align: middle;
+                cursor: pointer;
+                background-color: #f5f5f5;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                user-select: none;
+                transition: background-color 0.3s ease;
+            }
+
+            .button:hover {
+                background-color: #e5e5e5;
+            }
+
+            @media (max-width: 600px) {
+                .radio-container {
+                    flex-basis: calc(50% - 20px);
+                }
+            }
+        </style>
+
+    {% if no_results %}
+            <p>No results found! Press the button below to search again.</p>
+            <a href="{{ url_for('identify') }}" class="button">Search Again</a>
+    {% else %}
+
+        <h1 style="text-align:center">Bird Identity Search</h2>
+
+        <h3>Select characteristics below:</h3>
+
+        <form action="/identify/id_submission" method="POST" onsubmit="return validateForm()">
+
+            <!-- Dropdown menu for time of day selection -->
+            <label for="active">Time of day:</label><br>
+            <select id="active" name="active">
+                <option value="" disabled hidden>Select time of day</option>
+                {% for time in active %}
+                    <option value="{{ time }}">{{ time }}</option>
+                {% endfor %}
+            </select>
+            <div id="active-error" style="color: red;"></div>
+            <br>
+
+            <!-- Checkbox menu for feather color selection -->
+            <label for="feather_color">Feather color(s):</label><br>
+            {% for color in feather_color %}
+                <input type="checkbox" id="feather_color" name="feather_color" value="{{ color }}">
+                <label for="{{ color }}">{{ color }}</label><br>
             {% endfor %}
-        </select>
-        <div id="active-error" style="color: red;"></div>
-        <br>
+            <div id="feather-color-error" style="color: red;"></div>
+            <br>
 
-        <!-- Checkbox menu for feather color selection -->
-        <label for="feather_color">Feather color(s):</label><br>
-        {% for color in feather_color %}
-            <input type="checkbox" id="feather_color" name="feather_color" value="{{ color }}">
-            <label for="{{ color }}">{{ color }}</label><br>
-        {% endfor %}
-        <div id="feather-color-error" style="color: red;"></div>
-        <br>
+            <!-- Radio button menu for beak type selection -->
+            <label for="beak_type">Beak types:</label><br>
+            <div class="size-container">
 
-        <!-- Radio button menu for beak type selection -->
-        <label for="beak_type">Beak types:</label><br>
-        {% for beak in beak_type %}
-            <div class="radio-container">
-                <input type="radio" id="beak_type" name="beak_type" value="{{ beak }}">
-                <label for="{{ beak }}">{{ beak }}</label><br>
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-beaktype" src="{{ url_for('static', filename='images/catching_insects.png') }}" alt="catching_insects">
+                    </div>
+                    <input type="radio" id="catching_insects" name="beak_type" value="Catching Insects">
+                    <label for="catching_insects">Catching Insects</label>
+                </div>
+
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-beaktype" src="{{ url_for('static', filename='images/cracking_seeds.png') }}" alt="cracking_seeds">
+                    </div>
+                    <input type="radio" id="cracking_seeds" name="beak_type" value="Cracking Seeds">
+                    <label for="cracking_seeds">Cracking Seeds</label>
+                </div>
+
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-beaktype" src="{{ url_for('static', filename='images/probing.png') }}" alt="probing">
+                    </div>
+                    <input type="radio" id="probing" name="beak_type" value="Probing">
+                    <label for="probing">Probing</label>
+                </div>
+
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-beaktype" src="{{ url_for('static', filename='images/drilling_holes.png') }}" alt="drilling_holes">
+                    </div>
+                    <input type="radio" id="drilling_holes" name="beak_type" value="Drilling Holes">
+                    <label for="drilling_holes">Drilling</label>
+                </div>
+
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-beaktype" src="{{ url_for('static', filename='images/filtering.png') }}" alt="filtering">
+                    </div>
+                    <input type="radio" id="filtering" name="beak_type" value="Filtering">
+                    <label for="filtering">Filtering</label>
+                </div>
+
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-beaktype" src="{{ url_for('static', filename='images/tearing_meat.png') }}" alt="tearing_meat">
+                    </div>
+                    <input type="radio" id="tearing_meat" name="beak_type" value="Tearing Meat">
+                    <label for="tearing_meat">Tearing Meat</label>
+                </div>
+
+
             </div>
-        {% endfor %}
-        <div id="beak-type-error" style="color: red;"></div>
-        <br>
+            <div id="beak-type-error" style="color: red;"></div>
+            <br>
 
-        <input type="submit" value="Submit">
+            <!-- Radio button menu for size selection -->
+            <label for="bird_size">Sizes:</label><br>
+            <div class="size-container">
 
-    </form>
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-birdsize" src="{{ url_for('static', filename='images/xsmall.png') }}" alt="xsmall">
+                    </div>
+                    <input type="radio" id="xsmall" name="bird_size" value="xsmall">
+                    
+                </div>
 
-    <script>
-        function validateForm() {
-            var featherColor = document.querySelectorAll('input[name="feather_color"]:checked');
-            var beakType = document.querySelector('input[name="beak_type"]:checked');
-            var active = document.getElementById('active').value;
-            var featherColorError = "";
-            var beakTypeError = "";
-            var activeError = "";
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-birdsize" src="{{ url_for('static', filename='images/small.png') }}" alt="small">
+                    </div>
+                    <input type="radio" id="small" name="bird_size" value="small">
+                    
+                </div>
 
-            if (featherColor.length === 0) {
-                featherColorError = "Please select at least one feather color.";
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-birdsize" src="{{ url_for('static', filename='images/medium.png') }}" alt="medium">
+                    </div>
+                    <input type="radio" id="medium" name="bird_size" value="medium">
+                    
+                </div>
+
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-birdsize" src="{{ url_for('static', filename='images/large.png') }}" alt="large">
+                    </div>
+                    <input type="radio" id="large" name="bird_size" value="large">
+                    
+                </div>
+
+                <div class="radio-container">
+                    <div class="image-container">
+                        <img class="size-image-birdsize" src="{{ url_for('static', filename='images/xlarge.png') }}" alt="xlarge">
+                    </div>
+                    <input type="radio" id="xlarge" name="bird_size" value="xlarge">
+                    
+                </div>
+
+            </div>
+            <div id="bird-size-error" style="color: red;"></div>
+            <br>
+
+            <!-- Submit button -->
+            <br>
+            <input type="submit" value="Search">
+            <br>
+            <br>
+
+        </form>
+
+{% endif %}
+
+        <script>
+            function validateForm() {
+                var featherColor = document.querySelectorAll('input[name="feather_color"]:checked');
+                var beakType = document.querySelector('input[name="beak_type"]:checked');
+                var active = document.getElementById('active').value;
+                var birdSize = document.querySelector('input[name="bird_size"]:checked');
+                var featherColorError = "";
+                var beakTypeError = "";
+                var activeError = "";
+                var birdSizeError = ""
+
+                if (featherColor.length === 0) {
+                    featherColorError = "Please select at least one feather color.";
+                }
+                if (beakType === null) {
+                    beakTypeError = "Please select a beak type.";
+                }
+                if (active === '') {
+                    activeError = "Please select a time of day.";
+                }
+                if (birdSize === null) {
+                    birdSizeError = "Please select a size.";
+                }
+
+                document.getElementById('feather-color-error').innerText = featherColorError;
+                document.getElementById('beak-type-error').innerText = beakTypeError;
+                document.getElementById('active-error').innerText = activeError;
+                document.getElementById('bird-size-error').innerText = birdSizeError;
+
+                return featherColorError === "" && beakTypeError === "" && activeError === "" && birdSizeError === "";
             }
-            if (beakType === null) {
-                beakTypeError = "Please select a beak type.";
-            }
-            if (active === '') {
-                activeError = "Please select a time of day.";
-            }
+        </script>
 
-            document.getElementById('feather-color-error').innerText = featherColorError;
-            document.getElementById('beak-type-error').innerText = beakTypeError;
-            document.getElementById('active-error').innerText = activeError;
-        }
-    </script>
-</body>
-</html>
 {%endblock%}

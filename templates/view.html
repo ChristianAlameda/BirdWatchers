@@ -37,6 +37,10 @@
     <!--all posts: {{ all_posts }}<br>-->
     {% for document in all_posts %}
         <div class="container">
+
+            <!-- COLE - <div> for image URLs added -->
+            <div class="item"><img src="{{ document['item']['image'] }}"></div>
+
             <div class="item">common_name: {{ document['item']['common_name'] }}</div>
             <div class="item">genus_name: {{ document['item']['genus_name'] }}</div>
             <div class="item">species_name: {{ document['item']['species_name'] }}</div>

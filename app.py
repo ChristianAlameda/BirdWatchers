@@ -12,7 +12,7 @@ class MyFlaskApp:
     def __init__(self):
         self.curr_email = ''
         # Initialize Flask app
-        self.app = Flask(__name__)
+        self.app = Flask(__name__, static_url_path='/static')   # COLE - Added "static_url_path='/static" to reference static files in code
         self.app.secret_key = 'your_secret_key_here'
         #AUTH PATHS
         self.app.add_url_rule('/logged_in', 'logged_in', self.logged_in)
@@ -184,6 +184,27 @@ class MyFlaskApp:
         active = request.form.get('active')
         feather_color = request.form.getlist('feather_color')
         beak_type = request.form.get('beak_type')
+        bird_size = request.form.get('bird_size')
+
+        # DEBUGGING OUTPUT
+        print("LOG: Value of active: ", active)
+        print("LOG: Value of feather_color: ", feather_color)
+        print("LOG: Value of beak_type: ", beak_type)
+        print("LOG: Value of bird_size: ", bird_size)
+
+        bird_size_mapping = {
+            "xsmall": {"min": 0, "max": 3.9},
+            "small":  {"min": 4, "max": 7},
+            "medium": {"min": 7.1, "max": 13},
+            "large":  {"min": 13.1, "max": 19.9},
+            "xlarge": {"min": 20, "max": float('inf')}
+        }
+
+        # ERROR FIX: Initialize size_range even if bird_size is NULL --> avoids attempting to access size_range before it's defined
+        if bird_size is None:
+            size_range = {"min": 0, "max": float('inf')}
+        else:
+            size_range = bird_size_mapping[bird_size]
 
         # Convert time of day to corresponding value in DB
         if active in ['Morning', 'Noon', 'Afternoon']:
@@ -191,47 +212,91 @@ class MyFlaskApp:
         elif active == 'Evening':
             active = 'Nocturnal'
 
-        # Construct query object
+        # Construct query dict to be passed to DB
         query = {
-            "phys_features.feather_color": {"$in": feather_color},
+            "active": active,
+            "phys_features.feather_color": {"$all": feather_color},
             "phys_features.beak_type": beak_type,
-            "active": active
+            "phys_features.height": {"$gte": size_range['min'], "$lte": size_range['max']}
         }
         
         self.database.connect()
-        # Perform query and store results in results
-        
-        results = self.database.getPosts(query)
-        # print(results)
-        # print("Active:", active)
-        # print("Feather Color:", feather_color)
-        # print("Beak Type:", beak_type)
-        # print("Query:", query)
-        # print("Results:", results)
 
-        return render_template('add.html',json_results=results)
+        # Perform query and store results in results
+        results = self.database.getPosts(query)
+        print("LOG: Raw results data: ", results)
+
+        # Check if results are empty [] --> have to convert cursor that's returned from DB to list
+        results_list, is_empty = self.check_empty(results)
+        print("LOG: Results list: ", results_list)
+
+        # If results empty --> render /identify page with no results message
+        if is_empty:
+            print("LOG: No results: True")
+            return render_template('identify.html', no_results=True)
+
+        # Iterate through results_list and create array containing each retrieved document
+        items = [result for result in results_list]
+        print("LOG: Final items: ", items)
+
+        return render_template('add.html', query_results=items)
     
     def add(self):
-        print('here1')
-        item = request.form["selected_items"]
+        ### COLE - NEW CODE START ###
+
+        print("LOG: add() function START.")
+
+        # Retrieve SINGLE selected item from query results
+        item = request.form.get('selected_item')
+        print("LOG: Query result from id_submission() retrieved.")
+
+        # Parsing selected query result str to dict
         item = self.parseStringToDict(item)
-        
-        print('here2')
+        print("LOG: Query result string parsed to dict.")
+        print("LOG: Printing dict below...")
+        print("")
+        print(item)
+        print("")
+
+        print("Connecting to user database...")
         self.user_database.connect(self.curr_email)
-        print('here3')
-        # item = self.catch_duplicate({"item":item})
-        # print("item",'  ',type(item), '  ', item)
-        self.user_database.insertPost({"item":item})
-        return "YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
-        # if isinstance(item, dict):
-        #     self.user_database.insertPost({"item":item})
-        #     return "return YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
-        # else: 
-        #     return "return YOU HAVE ADDED THAT BIRD ALREADY PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
+        print("LOG: Connected to user database.")
+
+        # Check for dupes in user catalogue before adding new one
+        item = self.catch_duplicate({'item':item})
+        print("LOG: Duplicate documents checked.")
+        print("")
+        print("LOG: Attempting to insert dict as document to user database...")
+        self.user_database.insertPost(item)
+
+        return "YOU HAVE SUCCESSFULLY ADDED A SIGHTING TO YOUR CATALOGUE! PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>" 
         
-    
-    
+        ### COLE - NEW CODE END ###
+
+
+        ### CHRISTIAN - ORIGINAL CODE START ###
+
+        # NOTE: Double ## means original code was commented 
+
+        # print('here1')
+        # item = request.form["selected_items"]
+        # item = self.parseStringToDict(item)
         
+        # print('here2')
+        # self.user_database.connect(self.curr_email)
+        # print('here3')
+        ## item = self.catch_duplicate({"item":item})
+        ## print("item",'  ',type(item), '  ', item)
+        # self.user_database.insertPost({"item":item})
+        # return "YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
+        ## if isinstance(item, dict):
+        ##     self.user_database.insertPost({"item":item})
+        ##     return "return YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
+        ## else: 
+        ##     return "return YOU HAVE ADDED THAT BIRD ALREADY PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
+        
+        ### CHRISTIAN - ORIGINAL CODE END ###
+   
     def view(self):
         self.user_database.connect(self.curr_email)
         all_posts = self.user_database.getPosts({})
@@ -276,14 +341,18 @@ class MyFlaskApp:
         
         self.user_database.connect(self.curr_email)
         #remove the newest duplicate
-        posts = self.user_database.getPosts({'item':item})
+        posts = self.user_database.getPost({'item':item})   # COLE - Changed original getPosts() method call to getPost() since only single query result is selected for adding to catalogue
         print(posts)
-        cursor_list = list(posts)
-        print(cursor_list)
+        # cursor_list = list(posts)
+        # print(cursor_list)
         if posts:
             self.user_database.deletePost(posts)
             return False
         else: return item
+    
+    def check_empty(self, results):
+        results_list = list(results)
+        return results_list, len(results_list) == 0
         
     # def remove_double_quotes(self, item):
     #     if isinstance(item, list):

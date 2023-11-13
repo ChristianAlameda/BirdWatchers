@@ -3,18 +3,44 @@
 {% block title %}List of Items - My Website{% endblock %}
 
 {% block content %}
+
+    <!--
     <h1>List of Items</h1>
-    {{json_results}}
+    {{query_results}}
+    -->
+
+    <h1>Search results</h1>
+
     <form action="/add" method="POST">
         <ul>
-            {% for item in json_results %}
+            {% for item in query_results %}
+
+
+                <div class="card">
+                    <div class="card-body">
+                        <img src="{{ item.image }}">
+                        <h3 class="card-title">{{ item.names.common_name }}</h3>
+                        <p class="card-text">{{ item.names.genus_name }} {{ item.names.species_name }}</p>
+                        <p>(Will add more info...)</p>
+                        <button type="submit" name="selected_item" value="{{ item }}" id="{{ item }}">Add to catalogue</button>
+                    </div>
+                </div>
+
+
+                <!-- CHRISTIAN - ORIGINAL CODE START
                 <li>
                     <input type="checkbox" name="selected_items" value="{{ item }}" id="{{ item }}">
-                    <label for="{{ item }}">{{ item }}</label>
+                    <label for="{{ item }}">{{ item }}</label> 
                 </li>
+                CHRISTIAN - ORIGINAL CODE END -->
+              
+
             {% endfor %}
         </ul>
 
+        <!--
         <input type="submit" value="Submit">
+        -->
+    
     </form>
 {% endblock %}

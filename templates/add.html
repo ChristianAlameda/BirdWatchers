@@ -10,28 +10,91 @@
     -->
 
     <style>
-        img {
-            width: 200px;
-            height: auto; /* Maintain the aspect ratio */
+        .card {
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 18px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card-img-top {
+            width: 90%;
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            border-bottom-left-radius: 6px;     
+            border-bottom-right-radius: 6px;
+        }
+
+        .card-body {
+            background-color: #f8f9fa;
+            padding: 4px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: left;
+            margin-bottom: 10px;
+            margin-left: 18px;
+            margin-right: 18px;
         }
     </style>
 
-    <h1>Search results</h1>
+    <h1 style="text-align: center;">Search results</h1>
 
     <form action="/add" method="POST">
         <ul>
             {% for item in query_results %}
 
 
-                <div class="card">
-                    <div class="card-body">
-                        <img src="{{ item.image }}">
-                        <h3 class="card-title">{{ item.names.common_name }}</h3>
-                        <p class="card-text">{{ item.names.genus_name }} {{ item.names.species_name }}</p>
-                        <p>(Will add more info...)</p>
-                        <button type="submit" name="selected_item" value="{{ item }}" id="{{ item }}">Add to catalogue</button>
+                    <div class="card">
+                        <div class="card-body">
+                            <br>
+                            <img src="{{ item.image }}" class="card-img-top" alt="Item Image">
+                            <h3 class="card-title">{{ item.names.common_name }}</h3>
+                            <p class="card-text">Scientific name: {{ item.names.genus_name }} {{ item.names.species_name }}</p>
+
+                            <div class="additionalDetails" style="display: none;">
+                                <p class="card-text">Native US regions:
+                                    <span>
+                                        {% for region in item.nat_habitat.native_regions %}
+                                            {{ region }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </p>
+                                <p class="card-text">Habit description: {{ item.nat_habitat.habitat_desc }}</p>
+                                <p class="card-text">Active: {{ item.active }}</p>
+                                <p class="card-text">Diet: {{ item.diet }}</p>
+                                <p class="card-text">Behaviors:
+                                    <span>
+                                        {% for descriptor in item.behavior.descriptors %}
+                                            {{ descriptor }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </p>
+                                <p class="card-text">Behavior description: {{ item.behavior.behavior_desc }}</p>
+                                <p class="card-text">Conservation status: {{ item.conservation_status }}</p>
+                            </div>
+
+                            <p class="toggleDetails" style="text-decoration: underline; color: blue; cursor: pointer;" onclick="toggleDetails(this)">More details</p>
+                            <br>
+
+                            <button type="submit" name="selected_item" style ="margin-bottom: 20px;" value="{{ item }}" id="{{ item }}">Add to catalogue</button>
+                            <br>
+
+                        </div>
                     </div>
-                </div>
 
 
                 <!-- CHRISTIAN - ORIGINAL CODE START
@@ -50,4 +113,21 @@
         -->
     
     </form>
+
+    <script>
+        function toggleDetails(button) {
+            const cardBody = button.parentElement;
+            const additionalDetails = cardBody.querySelector('.additionalDetails');
+            const buttonText = cardBody.querySelector('.toggleDetails');
+
+            if (additionalDetails.style.display === 'none') {
+                additionalDetails.style.display = 'block';
+                buttonText.textContent = 'Show less';
+            } else {
+                additionalDetails.style.display = 'none';
+                buttonText.textContent = 'More details';
+            }
+        }
+    </script>
+
 {% endblock %}

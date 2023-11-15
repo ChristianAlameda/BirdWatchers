@@ -40,6 +40,8 @@ class MyFlaskApp:
         self.database = Database()
         self.database.connect()
         
+        self.database.checkIfEmpty()
+        
         #AUTH DATABASE
         self.user_database = UserDatabase()
         self.user_database.connect('auth')
@@ -89,10 +91,10 @@ class MyFlaskApp:
                     print('hello')
                     session["email"] = email_val
                     self.curr_email = email_val
-                    return redirect(url_for('logged_in'))#MAY CHANGE
+                    return redirect(url_for('home'))#MAY CHANGE logged_in
                 else:
                     if "email" in session:
-                        return redirect(url_for("logged_in"))#MAY CHANGE
+                        return redirect(url_for("home"))#MAY CHANGE
                     message = 'Wrong password'
                     return render_template('auth/login.html', message=message)
             else:
@@ -142,7 +144,7 @@ class MyFlaskApp:
     ######################################
     
     def home(self):
-        return render_template('home.html')
+        return render_template('home.html', email=self.curr_email)
 
     def rem(self):
         self.user_database.connect(self.curr_email)

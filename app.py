@@ -184,18 +184,17 @@ class MyFlaskApp:
         return render_template('identify.html', active=active, feather_color=feather_color, beak_type=beak_type)
     
     def id_results(self):
-        log_title = "[Method: id_results()]: "
-
-        print(log_title, "Method START")
+        # For debugging purposes
+        log_title = "[Method: id_results()]:\n"
+        print(log_title, "Method START\n")
         print("")
 
-        # Grab user-selected values from HTML forms
+        # Retrieve user-selected values from HTML forms
         active = request.form.get('active')
         feather_color = request.form.getlist('feather_color')
         beak_type = request.form.get('beak_type')
         bird_size = request.form.get('bird_size')
 
-        # DEBUGGING OUTPUT
         print(log_title, "Value of active: ", active)
         print(log_title, "Value of feather_color: ", feather_color)
         print(log_title, "Value of beak_type: ", beak_type)
@@ -229,19 +228,20 @@ class MyFlaskApp:
             "phys_features.height": {"$gte": size_range['min'], "$lte": size_range['max']}
         }
         
+        print(log_title, "Connecting to database...")
         self.database.connect()
+        print(log_title, "Connected.")
 
         # Perform query and store results in results
+        print(log_title, "Performing query...")
         results = self.database.getPosts(query)
         print("")
         print(log_title, "Raw query results data: ", results)
         print("")
 
-        # Check if results are empty [] --> have to convert cursor that's returned from DB to list
+        # Check if results are empty [] --> have to convert cursor that's returned from DB to list, check_empty() handles this.
+        print(log_title, "Checking if query results are empty...")
         results_list, is_empty = self.check_empty(results)
-        print("")
-        print(log_title, "Results list: ", results_list)
-        print("")
 
         # If results empty --> render /identify page with no results message
         if is_empty:
@@ -260,12 +260,13 @@ class MyFlaskApp:
         return render_template('results.html', query_results=items)
     
     def add(self):
-        log_title = "[Method: add()]: "
+        # For debugging purposes
+        log_title = "[Method: add()]:\n"
         print(log_title, "Method START.")
 
-        # Retrieve SINGLE selected item from query results
+        # Retrieve selected (single) item from query results => retrieved from user selection on 'results.html' page
         self.selected_result = request.form.get('selected_item')
-        print(log_title, "Selected query result from id_results() retrieved.")
+        print(log_title, "Selected query result retrieved.")
 
         # Parsing selected query result str to dict
         self.selected_result = self.parseStringToDict(self.selected_result)
@@ -288,13 +289,15 @@ class MyFlaskApp:
         return render_template('add_details.html', item=self.selected_result)
 
     def add_details(self):
+        # For debugging purposes
         log_title = "[Method: add_details()]: "
-
         print(log_title, "Method START.")
         print("")
 
+        # Define 'item' with current value of global var 'self.selected_result'
         item = self.selected_result
 
+        # Retrieve user defined summary and date from 'add_details.html' page
         sighting_summary = request.form.get('sighting_summary')
         sighting_date = request.form.get('sighting_date')
         print("")
@@ -304,11 +307,11 @@ class MyFlaskApp:
         print(log_title, "Received date value: ", sighting_date)
         print("")
 
-        #item = self.parseStringToDict(item)
+        # Insert retrieved summary and date values into current dict
         item["sighting_summary"] = sighting_summary
         item["sighting_date"] = sighting_date
 
-
+        # Insert into user DB
         print(log_title, "ATTEMPTING TO INSERT INTO USER DATABASE...")
         print(log_title, "Connecting to user DB...")
         self.user_database.connect(self.curr_email)
@@ -328,16 +331,24 @@ class MyFlaskApp:
         return render_template('add_success.html')
         
     def view(self):
-        log_title = "[Method: view()]: "
+        # For debugging purposes
+        log_title = "[Method: view()]:\n"
+        print(log_title, "Method START.")
+        print("")
 
+        print(log_title, "Connecting to user DB...")
         self.user_database.connect(self.curr_email)
+        print(log_title, "Connected.")
+
+        # Retrieve all user's inserted documents
+        print(log_title, "Retrieving user documents in collection...")
         all_posts = self.user_database.getPosts({})
-        # print(all_posts[0])
-        #all_posts_list = []
-        #for i in all_posts:
-        #    all_posts_list.append(i)
+        print(log_title, "Documents retrieved.")
+        print("")
+
+        # Convert cursor object to list
         all_posts_list = list(all_posts)
-        print(log_title, "all_posts_list: ", all_posts_list)
+        print(log_title, "Printing documents below:\n", all_posts_list)
         print("")
             
         if all_posts == None:

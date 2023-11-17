@@ -1,13 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}List of Items - My Website{% endblock %}
+{% block title %}Search Results - My Website{% endblock %}
 
 {% block content %}
-
-    <!--
-    <h1>List of Items</h1>
-    {{query_results}}
-    -->
 
     <style>
         .card {
@@ -53,7 +48,7 @@
 
     <h1 style="text-align: center;">Search results</h1>
 
-    <form action="/add" method="POST">
+    <form action="/identify/id_results/add" method="POST">
         <ul>
             {% for item in query_results %}
 
@@ -73,7 +68,7 @@
                                         {% endfor %}
                                     </span>
                                 </p>
-                                <p class="card-text">Habit description: {{ item.nat_habitat.habitat_desc }}</p>
+                                <p class="card-text">Habitat description: {{ item.nat_habitat.habitat_desc }}</p>
                                 <p class="card-text">Active: {{ item.active }}</p>
                                 <p class="card-text">Diet: {{ item.diet }}</p>
                                 <p class="card-text">Behaviors:
@@ -94,16 +89,7 @@
                             <br>
 
                         </div>
-                    </div>
-
-
-                <!-- CHRISTIAN - ORIGINAL CODE START
-                <li>
-                    <input type="checkbox" name="selected_items" value="{{ item }}" id="{{ item }}">
-                    <label for="{{ item }}">{{ item }}</label> 
-                </li>
-                CHRISTIAN - ORIGINAL CODE END -->
-              
+                    </div>             
 
             {% endfor %}
         </ul>

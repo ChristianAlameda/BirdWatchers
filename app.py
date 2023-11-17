@@ -10,39 +10,39 @@ from bson import ObjectId
 
 class MyFlaskApp:
     def __init__(self):
+        # GLOBAL VARS
         self.curr_email = ''
+        self.selected_result = ''
+
         # Initialize Flask app
         self.app = Flask(__name__, static_url_path='/static')   # COLE - Added "static_url_path='/static" to reference static files in code
         self.app.secret_key = 'your_secret_key_here'
-        #AUTH PATHS
+
+        ### APP ROUTES ###
+        # AUTH PATHS
         self.app.add_url_rule('/logged_in', 'logged_in', self.logged_in)
         self.app.add_url_rule('/login', 'login', self.login, methods=['POST', 'GET'])
         self.app.add_url_rule('/logout', 'logout', self.logout, methods=['POST', 'GET'])
         self.app.add_url_rule('/', 'index', self.index, methods=['POST', 'GET'])
-        
-        # Add routes to the app
-        #Changed to home from /
-        self.app.add_url_rule('/home', 'home', self.home)
-        # #ADDING
-        self.app.add_url_rule('/add', 'add', self.add, methods=['POST'])
-        #REMOVING
+        # HOME
+        self.app.add_url_rule('/home', 'home', self.home)   # NOTE: Changed to home from /
+        # REMOVING
         self.app.add_url_rule('/rem', 'rem', self.rem)
         self.app.add_url_rule('/rem/new_removed_document', 'new_removed_document', self.new_removed_document, methods=['POST'])
-        #IDENTIFYING
+        # IDENTIFYING & ADDING
         self.app.add_url_rule('/identify', 'identify', self.identify)
-        self.app.add_url_rule('/identify/id_submission', 'id_submission', self.id_submission, methods=['POST'])
-        
-        #VIEWING
+        self.app.add_url_rule('/identify/id_results', 'id_results', self.id_results, methods=['POST'])
+        self.app.add_url_rule('/identify/id_results/add', 'add', self.add, methods=['POST'])
+        self.app.add_url_rule('/identify/id_results/add/add_details', 'add_details', self.add_details, methods=['POST'])
+        # VIEWING
         self.app.add_url_rule('/view', 'view', self.view)
         
-        
-        #CLASS INITIALIZATION
+        # DB CLASS INITIALIZATION
         self.database = Database()
         self.database.connect()
-        
         self.database.checkIfEmpty()
         
-        #AUTH DATABASE
+        # AUTH DATABASE INITIALIZATION
         self.user_database = UserDatabase()
         self.user_database.connect('auth')
     
@@ -150,9 +150,11 @@ class MyFlaskApp:
         self.user_database.connect(self.curr_email)
         all_posts = self.user_database.getPosts({})
         # print(all_posts[0])
-        all_posts_list = []
-        for i in all_posts:
-            all_posts_list.append(i)
+        #all_posts_list = []
+        #for i in all_posts:
+        #    all_posts_list.append(i)
+
+        all_posts_list = list(all_posts)
             
         if all_posts == None:
             message = "You do not currently have any items in your collection yet please go back to the homeapge<br><br><a href='home'>Visit Homepage</a>"
@@ -181,7 +183,12 @@ class MyFlaskApp:
 
         return render_template('identify.html', active=active, feather_color=feather_color, beak_type=beak_type)
     
-    def id_submission(self):
+    def id_results(self):
+        log_title = "[Method: id_results()]: "
+
+        print(log_title, "Method START")
+        print("")
+
         # Grab user-selected values from HTML forms
         active = request.form.get('active')
         feather_color = request.form.getlist('feather_color')
@@ -189,10 +196,10 @@ class MyFlaskApp:
         bird_size = request.form.get('bird_size')
 
         # DEBUGGING OUTPUT
-        print("LOG: Value of active: ", active)
-        print("LOG: Value of feather_color: ", feather_color)
-        print("LOG: Value of beak_type: ", beak_type)
-        print("LOG: Value of bird_size: ", bird_size)
+        print(log_title, "Value of active: ", active)
+        print(log_title, "Value of feather_color: ", feather_color)
+        print(log_title, "Value of beak_type: ", beak_type)
+        print(log_title, "Value of bird_size: ", bird_size)
 
         bird_size_mapping = {
             "xsmall": {"min": 0, "max": 3.9},
@@ -226,92 +233,118 @@ class MyFlaskApp:
 
         # Perform query and store results in results
         results = self.database.getPosts(query)
-        print("LOG: Raw results data: ", results)
+        print("")
+        print(log_title, "Raw query results data: ", results)
+        print("")
 
         # Check if results are empty [] --> have to convert cursor that's returned from DB to list
         results_list, is_empty = self.check_empty(results)
-        print("LOG: Results list: ", results_list)
+        print("")
+        print(log_title, "Results list: ", results_list)
+        print("")
 
         # If results empty --> render /identify page with no results message
         if is_empty:
-            print("LOG: No results: True")
+            print(log_title, "No results: True")
             return render_template('identify.html', no_results=True)
 
         # Iterate through results_list and create array containing each retrieved document
         items = [result for result in results_list]
-        print("LOG: Final items: ", items)
+        print("")
+        print(log_title, "Final items: ", "   ", type(items), "   ", items)
+        print("")
 
-        return render_template('add.html', query_results=items)
+        print(log_title, "Method END.")
+        print("")
+
+        return render_template('results.html', query_results=items)
     
     def add(self):
-        ### COLE - NEW CODE START ###
-
-        print("LOG: add() function START.")
+        log_title = "[Method: add()]: "
+        print(log_title, "Method START.")
 
         # Retrieve SINGLE selected item from query results
-        item = request.form.get('selected_item')
-        print("LOG: Query result from id_submission() retrieved.")
+        self.selected_result = request.form.get('selected_item')
+        print(log_title, "Selected query result from id_results() retrieved.")
 
         # Parsing selected query result str to dict
-        item = self.parseStringToDict(item)
-        print("LOG: Query result string parsed to dict.")
-        print("LOG: Printing dict below...")
+        self.selected_result = self.parseStringToDict(self.selected_result)
+        print(log_title, "Selected query result string parsed to dict.")
+        print(log_title, "Printing dict below...")
         print("")
-        print(item)
+        print(type(self.selected_result), self.selected_result)
         print("")
 
-        print("Connecting to user database...")
+        # Initialize to-be-added keys/fields for add_details()
+        self.selected_result["sighting_summary"] = ""
+        self.selected_result["sighting_date"] = ""
+
+        print(log_title, "printing dict with new fields (currently empty): ", self.selected_result)
+        print("")
+
+        print(log_title, "Method END.")
+        print("")
+
+        return render_template('add_details.html', item=self.selected_result)
+
+    def add_details(self):
+        log_title = "[Method: add_details()]: "
+
+        print(log_title, "Method START.")
+        print("")
+
+        item = self.selected_result
+
+        sighting_summary = request.form.get('sighting_summary')
+        sighting_date = request.form.get('sighting_date')
+        print("")
+        print(log_title, "Current dict: ", item)
+        print("")
+        print(log_title, "Received summary value: ", sighting_summary)
+        print(log_title, "Received date value: ", sighting_date)
+        print("")
+
+        #item = self.parseStringToDict(item)
+        item["sighting_summary"] = sighting_summary
+        item["sighting_date"] = sighting_date
+
+
+        print(log_title, "ATTEMPTING TO INSERT INTO USER DATABASE...")
+        print(log_title, "Connecting to user DB...")
         self.user_database.connect(self.curr_email)
-        print("LOG: Connected to user database.")
-
-        # Check for dupes in user catalogue before adding new one
-        item = self.catch_duplicate({'item':item})
-        print("LOG: Duplicate documents checked.")
+        print(log_title, "Connected.")
+        print(log_title, "Checking for dupes in user's collection...")
+        item = self.catch_duplicate({"item":item})
+        print(log_title, "No duplicates found.")
         print("")
-        print("LOG: Attempting to insert dict as document to user database...")
+        print(log_title, "Final item before insertion:",'  ',type(item), '  ', item)
+        print("")
+        print(log_title, "INSERTING...")
         self.user_database.insertPost(item)
+        print(log_title, "Item has been successfully inserted into user's collection.")
+        print(log_title, "Function END.")
+        print("")
 
-        return "YOU HAVE SUCCESSFULLY ADDED A SIGHTING TO YOUR CATALOGUE! PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>" 
+        return render_template('add_success.html')
         
-        ### COLE - NEW CODE END ###
-
-
-        ### CHRISTIAN - ORIGINAL CODE START ###
-
-        # NOTE: Double ## means original code was commented 
-
-        # print('here1')
-        # item = request.form["selected_items"]
-        # item = self.parseStringToDict(item)
-        
-        # print('here2')
-        # self.user_database.connect(self.curr_email)
-        # print('here3')
-        ## item = self.catch_duplicate({"item":item})
-        ## print("item",'  ',type(item), '  ', item)
-        # self.user_database.insertPost({"item":item})
-        # return "YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
-        ## if isinstance(item, dict):
-        ##     self.user_database.insertPost({"item":item})
-        ##     return "return YOU HAVE SUCCESSFULLY ADDED A PRESET PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
-        ## else: 
-        ##     return "return YOU HAVE ADDED THAT BIRD ALREADY PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>"
-        
-        ### CHRISTIAN - ORIGINAL CODE END ###
-   
     def view(self):
+        log_title = "[Method: view()]: "
+
         self.user_database.connect(self.curr_email)
         all_posts = self.user_database.getPosts({})
         # print(all_posts[0])
-        all_posts_list = []
-        for i in all_posts:
-            all_posts_list.append(i)
+        #all_posts_list = []
+        #for i in all_posts:
+        #    all_posts_list.append(i)
+        all_posts_list = list(all_posts)
+        print(log_title, "all_posts_list: ", all_posts_list)
+        print("")
             
         if all_posts == None:
             message = "You do not currently have any items in your collection yet please go back to the homeapge<br><br><a href='home'>Visit Homepage</a>"
             return message
         else:
-            return render_template('view.html', all_posts=all_posts_list)
+            return render_template('view.html', all_posts=all_posts_list, email=self.curr_email)
 
     #################################
     #################################
@@ -369,5 +402,3 @@ class MyFlaskApp:
 if __name__ == "__main__":
     x = MyFlaskApp()
     x.app.run(host="0.0.0.0", port=7777)
-
-# test comment

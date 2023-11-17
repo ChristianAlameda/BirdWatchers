@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}View Documents - My Website{% endblock %}
+
+{% block content %}
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            /* Apply alternating styles for list items */
+            ul {
+              list-style-type: none;
+              padding: 0;
+            }
+        
+            li:nth-child(odd) {
+              background-color: black;
+              color: white;
+            }
+        
+            li:nth-child(even) {
+              background-color: white;
+              color: black;
+            }
+          </style>
+          <title>Hi</title>
+    </head>
+    <body>
+    <h1 style="text-align:center">View Documents</h1><br>
+    all posts: {{ all_posts }}<br>
+    document in all_posts
+    {% for document in all_posts %}
+        <div style="background:black, color:white">
+        <li>{{ document['names'] }}</li>
+        <li>{{ document['genus_name'] }}</li>
+        <li>{{ document['species_name'] }}</li>
+        <li>{{ document['nat_habitat'] }}</li>
+        <li>{{ document['diet'] }}</li>
+        <li>{{ document['feather_color'] }}</li>
+        <li>{{ document['names'] }}</li>
+        <li>{{ document['names'] }}</li>
+        <li>{{ document['names'] }}</li>
+        <li>{{ document['names'] }}</li>
+        <li>{{ document['names'] }}</li>
+        </div>
+    {% endfor %}
+    </body>
+    </html>
+{% endblock %}

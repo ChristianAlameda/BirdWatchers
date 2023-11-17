@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        function addForm() {
+            // Clone the original form and assign a unique ID
+            const clonedForm = document.querySelector('#originalForm').cloneNode(true);
+            const uniqueID = "clonedForm" + (new Date()).getTime();
+            clonedForm.id = uniqueID;
+
+            // Append the cloned form to the container
+            document.querySelector('#formContainer').appendChild(clonedForm);
+        }
+
+        function collectFormData() {
+            const formElements = document.querySelectorAll('form');
+            const formData = [];
+
+            formElements.forEach((form) => {
+                const formInputs = form.elements;
+                const data = {};
+
+                for (let i = 0; i < formInputs.length; i++) {
+                    const input = formInputs[i];
+                    if (input.type !== 'submit') {
+                        data[input.name] = input.value;
+                    }
+                }
+
+                formData.push(data);
+            });
+
+            // Send a POST request with all the form data to the Flask server
+            fetch('/add/new_added_document', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <ul>
+        <li><a class="current" href="/">Home</a></li>
+        <li><a href="/add">Add Doucment</a></li>
+        <li><a href="/rem">Delete Document</a></li>
+        <li><a href="/view">View Documents</a></li>
+        <li><a href="/identify">Identify Bird</a></li>
+        
+    </ul><br>
+    <button onclick="addForm()">Add Form</button>
+    <button onclick="collectFormData()">Collect Data and Send POST Request</button>
+
+    <div id="formContainer">
+        <form id="originalForm">
+            <!-- Your form fields go here -->
+            <label for="field1">Field 1:</label>
+            <input type="text" name="field1">
+            <br>
+
+            <label for="field2">Field 2:</label>
+            <input type="text" name="field2">
+            <br>
+        </form>
+    </div>
+</body>
+</html>

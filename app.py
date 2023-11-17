@@ -64,7 +64,7 @@ class MyFlaskApp:
             password2 = request.form.get("password2")
 
             result = self.register_user(user, email, password1, password2)
-
+            
             if result == email:
                 self.curr_email = email
                 return render_template('auth/logged_in.html', email=result)
@@ -88,7 +88,6 @@ class MyFlaskApp:
                 passwordcheck = email_found['password']
 
                 if bcrypt.checkpw(password.encode('utf-8'), passwordcheck):
-                    print('hello')
                     session["email"] = email_val
                     self.curr_email = email_val
                     return redirect(url_for('home'))#MAY CHANGE logged_in
@@ -114,7 +113,8 @@ class MyFlaskApp:
         
         user_found = self.user_database.find_user_by_name(user)
         email_found = self.user_database.find_user_by_email(email)
-
+        
+        
         if user_found:
             return 'There already is a user by that name'
         if email_found:

@@ -1,63 +1,113 @@
 {% extends "base.html" %}
 
-{% block title %}View Documents - My Website{% endblock %}
+{% block title %}My Catalogue - My Website{% endblock %}
 
 {% block content %}
-    <!DOCTYPE html>
-    <html>
+
     <style>   
-        /* Apply alternating styles for non-list items */
-        .container {
-            background-color:green;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-    
-        .item:nth-child(odd) {
-            background-color: black;
-            color: white;
-            padding: 10px;
-            margin: 5px;
-        }
-    
-        .item:nth-child(even) {
-            background-color: white;
-            color: black;
-            padding: 10px;
-            margin: 5px;
+        .card {
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 18px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        img {
-            width: 200px;
-            height: auto; /* Maintain the aspect ratio */
+        .card-body {
+            background-color: #f8f9fa;
+            padding: 4px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .card-subtitle {
+            font-size: 1.0rem;
+            font-weight: 800;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            margin-left: 18px;
+            margin-right: 18px;
+            text-align: left;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: left;
+            margin-top: 2px;
+            margin-bottom: 6px;
+            margin-left: 18px;
+            margin-right: 18px;
         }
     </style>
-    <head>
-          <title>Hi</title>
-    </head>
-    <body>
-    <h1 style="text-align:center">Remove Documents</h1><br>
-    <!--all posts: {{ all_posts }}<br>-->
-    {% for document in all_posts %}
-        <div class="container">
 
-            <!-- COLE - <div> for image URLs added -->
-            <div class="item"><img src="{{ document['item']['image'] }}"></div>
+    <h1 style="text-align:center">{{ email }}'s Catalogue</h1><br>
 
-            <div class="item">common_name: {{ document['item']['common_name'] }}</div>
-            <div class="item">genus_name: {{ document['item']['genus_name'] }}</div>
-            <div class="item">species_name: {{ document['item']['species_name'] }}</div>
-            <div class="item">native_regions: {{ document['item']['native_regions'] }}</div>
-            <div class="item">habitat_desc: {{ document['item']['habitat_desc'] }}</div>
-            <div class="item">diet: {{ document['item']['diet'] }}</div>
-            <div class="item">active: {{ document['item']['active'] }}</div>
-            <div class="item">weight: {{ document['item']['weight'] }}</div>
-            <div class="item">descriptors: {{ document['item']['descriptors'] }}</div>
-            <div class="item">behavior_desc: {{ document['item']['behavior_desc'] }}</div>
-        </div>
-    {% endfor %}
-    </body>
-    </html>
+        {% for document in all_posts %}
+
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">{{ document['item']['sighting_date']}} - Sighting</h3>
+                    <h5 class="card-subtitle">{{ document['item']['common_name'] }}</h3>
+                    <p class="card-text" style="font-weight: bold; margin-bottom: 0px;">Summary/notes: 
+                        <span>
+                            <p class="card-text" style="margin-top: 0px; margin-bottom: 2px;">{{ document['item']['sighting_summary'] }}</p>
+                        </span>
+                    </p>
+
+                    <div class="additionalDetails" style="display: none;">
+                        <p class="card-text" style="font-weight: bold; margin-bottom: 0px;">Bird information</p>
+                        <p class="card-text" style="margin-top: 4px;">Scientific name: {{ document['item']['genus_name'] }} {{ document['item']['species_name'] }}</p>
+                        <p class="card-text">Native US regions:
+                            <span>
+                                {% for region in document['item']['native_regions'] %}
+                                    {{ region }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </span>
+                        </p>
+                        <p class="card-text">Habitat description: {{ document['item']['habitat_desc'] }}</p>
+                        <p class="card-text">Active: {{ document['item']['active'] }}</p>
+                        <p class="card-text">Diet: {{ document['item']['diet'] }}</p>
+                        <p class="card-text">Behaviors:
+                            <span>
+                                {% for descriptor in document['item']['descriptors'] %}
+                                    {{ descriptor }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </span>
+                        </p>
+                        <p class="card-text">Behavior description: {{ document['item']['behavior_desc'] }}</p>
+                        <p class="card-text">Conservation status: {{ document['item']['conservation_status'] }}</p>
+                    </div>
+
+                    <p class="toggleDetails" style="text-decoration: underline; color: blue; cursor: pointer;" onclick="toggleDetails(this)">Bird info</p>
+                    <br>
+
+                </div>
+            </div>
+
+        {% endfor %}
+
+    <script>
+        function toggleDetails(button) {
+            const cardBody = button.parentElement;
+            const additionalDetails = cardBody.querySelector('.additionalDetails');
+            const buttonText = cardBody.querySelector('.toggleDetails');
+
+            if (additionalDetails.style.display === 'none') {
+                additionalDetails.style.display = 'block';
+                buttonText.textContent = 'Show less';
+            } else {
+                additionalDetails.style.display = 'none';
+                buttonText.textContent = 'Bird info';
+            }
+        }
+    </script>
+
 {% endblock %}
 

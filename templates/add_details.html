@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Sighting Details - My Website{% endblock %}
+
+{% block content %}
+<style>
+    .card {
+        width: 300px;
+        border: 1px solid #ddd;
+        border-radius: 18px;
+        box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card-body {
+        background-color: #f8f9fa;
+        padding: 4px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    .card-subtitle {
+        font-size: 1.0rem;
+        font-weight: 800;
+        margin-top: 14px;
+        margin-bottom: 6px;
+        margin-left: 18px;
+        margin-right: 18px;
+        text-align: left;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        color: #666;
+        text-align: left;
+        margin-top: 2px;
+        margin-bottom: 6px;
+        margin-left: 18px;
+        margin-right: 18px;
+    }
+
+    .form-group-date {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .form-control-textarea {
+        resize: vertical; /* Allow vertical resizing */
+        height: 100px; /* Initial height */
+        width: calc(100% - 50px); /* Adjust width */
+        margin: 0 auto; /* Center the textarea */
+        padding: 5px; 
+    }
+
+    .form-control-date {
+        width: calc(100% - 150px); /* Adjust width */
+        margin-right: 20px;
+    }
+
+   
+</style>
+
+<h1 style="text-align:center">Edit New Sighting</h1><br>
+
+<form action="/identify/id_results/add/add_details" method="POST">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">NEW SIGHTING</h3>
+            <h5 class="card-subtitle">{{ item.common_name }}</h3>
+            <p class="card-text">Scientific name: {{ item.genus_name }} {{ item.species_name }}</p>
+            <br>
+
+           
+            <p class="card-text" style="font-weight: bold; margin-bottom: 2px;">Sighting summary/notes:</p>
+            <textarea class="form-control-textarea" id="sighting_summary" name="sighting_summary" rows="4"></textarea>
+            
+            <div class="form-group-date">
+                <p class="card-text" style="font-weight: bold; margin-bottom: 1px;">Sighting date:</p> 
+                <input type="date" class="form-control-date" id="sighting_date" name="sighting_date">
+            </div>
+            <button type="submit" name="edited_item" style ="margin-top: 15px; margin-bottom: 20px; width: calc(100% - 220px);" value="{{ item }}" id="{{ item }}">Save</button>
+            <br>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

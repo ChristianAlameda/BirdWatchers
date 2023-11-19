@@ -200,12 +200,20 @@ class MyFlaskApp:
         print(log_title, "Value of beak_type: ", beak_type)
         print(log_title, "Value of bird_size: ", bird_size)
 
+        #bird_size_mapping = {
+        #    "xsmall": {"min_height": 0, "max_height": 3.9, ""},
+        #    "small":  {"min": 4, "max": 7},
+        #    "medium": {"min": 7.1, "max": 13},
+        #    "large":  {"min": 13.1, "max": 19.9},
+        #    "xlarge": {"min": 20, "max": float('inf')}
+        #}
+
         bird_size_mapping = {
-            "xsmall": {"min": 0, "max": 3.9},
-            "small":  {"min": 4, "max": 7},
-            "medium": {"min": 7.1, "max": 13},
-            "large":  {"min": 13.1, "max": 19.9},
-            "xlarge": {"min": 20, "max": float('inf')}
+            "xsmall": {"height_min": 0, "height_max": 7.9},
+            "small": {"height_min": 7.9, "height_max": 11},
+            "medium": {"height_min": 11, "height_max": 16},
+            "large": {"height_min": 16, "height_max": 30},
+            "xlarge": {"height_min": 30, "height_max": float('inf')}
         }
 
         # ERROR FIX: Initialize size_range even if bird_size is NULL --> avoids attempting to access size_range before it's defined
@@ -225,7 +233,7 @@ class MyFlaskApp:
             "active": active,
             "phys_features.feather_color": {"$all": feather_color},
             "phys_features.beak_type": beak_type,
-            "phys_features.height": {"$gte": size_range['min'], "$lte": size_range['max']}
+            "phys_features.height": {"$gte": size_range['height_min'], "$lte": size_range['height_max']}
         }
         
         print(log_title, "Connecting to database...")

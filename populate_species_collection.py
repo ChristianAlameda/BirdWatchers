@@ -1,5 +1,14 @@
 from pymongo import MongoClient
 
+def remove_id_fields(data):
+    for doc in data:
+        if '_id' in doc:
+            del doc['_id']
+        for key, value in doc.items():
+            if isinstance(value, dict) and '$oid' in value:
+                doc[key] = value['$oid']
+    return data
+
 data = [{
   "_id": {
     "$oid": "655033bc915817f3def9e14b"
@@ -3931,10 +3940,13 @@ data = [{
   "image": "https://upload.wikimedia.org/wikipedia/commons/1/14/Great-tailed_grackle_%28Quiscalus_mexicanus_mexicanus%29_male_Copan.jpg"
 }]
 
+clean_data = remove_id_fields(data)
+
+
 # Connect to MongoDB
 client = MongoClient('mongodb://localhost:27017/')
 db = client['BirdWatchers_Test']  # Replace with your database name
 collection = db['BW_Test']  # Replace with your collection name
 
 # Insert data into the collection
-collection.insert_many(data)
+collection.insert_many(clean_data)

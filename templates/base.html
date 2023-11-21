@@ -1,27 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}My Website{% endblock %}</title>
+    <title>{% block title %}Avilog{% endblock %}</title>
     <style>
         html {
-            background-image: url("{{ url_for('static', filename='images/possible_backgrounds/bird_flying.jpg') }}");
+            /*background-image: url("{{ url_for('static', filename='images/possible_backgrounds/bird_flying.jpg') }}");
             background-repeat: no-repeat;
             background-size: cover;
             height: 100%; 
-            margin: 0; 
+            margin: 0; */
+            font-family: Calibri, sans-serif;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex; /* Set display to flex for horizontal alignment */
+            justify-content: space-around; /* Align items with space around */
+            background-color: #f2f2f2;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        
+        nav ul li {
+            display: inline; /* Display list items inline */
+            margin-right: 10px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            padding: 5px 10px;
+        }
+
+        nav ul li a.current {
+            background-color: #ddd;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>BIRD WATCHERS</h1>
+    <header style="background-color: #f7f7f7;">
+        <img src="{{ url_for('static', filename='images/AVILOG-logo-w-phrase.png') }}" style="height: 250px; width: auto; margin: -50px 0;">
     </header>
     <nav>
         <ul>
-            <li><a class="current" href="/home">Home</a></li>
-            <li><a href="/view">My Catalogue</a></li>
-            <li><a href="/rem">Edit Catalogue</a></li>
-            <li><a href="/identify">Bird Search Tool</a></li>
+            <li><a {% if request.path == '/home' %}class="current"{% endif %} href="/home">Home</a></li>
+            <li><a {% if request.path in ['/identify', '/identify/id_results', '/identify/id_results/add', '/identify/id_results/add/add_details'] %}class="current"{% endif %} href="/identify">Bird Search Tool</a></li>
+            <li><a {% if request.path == '/view' %}class="current"{% endif %} href="/view">My Catalogue</a></li>
+            <li><a {% if request.path == '/rem'%}class="current"{% endif %} href="/rem">Edit Catalogue</a></li>
             
         </ul><br>
     </nav>

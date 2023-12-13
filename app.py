@@ -156,9 +156,8 @@ class MyFlaskApp:
 
         all_posts_list = list(all_posts)
             
-        if all_posts == None:
-            message = "You do not currently have any items in your collection yet please go back to the homeapge<br><br><a href='home'>Visit Homepage</a>"
-            return message
+        if not all_posts_list:
+            return render_template('view_empty.html')
         else:
             return render_template('rem.html', all_posts=all_posts_list)
     
@@ -168,13 +167,13 @@ class MyFlaskApp:
         print(posts)
         if len(posts) == 1:
             self.user_database.deletePost({'_id':ObjectId(posts[0])})
-            return "YOU HAVE SUCCESSFULLY REMOVED A DOCUMENT PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>" 
+            return render_template('rem_success.html')
         if len(posts) == 0:
-            return "YOU HAVE NO ITEMS IN THE LIST PLEASE RETURN TO HOMEPAGE<br><br><a href='home'>Visit Homepage</a>" 
+            return render_template('rem_fail.html') 
         else:
             for i in posts:
                 self.user_database.deletePosts({'_id':ObjectId(posts[i])})
-            return "YOU HAVE SUCCESSFULLY REMOVED SEVERAL DOCUMENTS PRESS THIS LINK TO GET BACK TO THE HOMEPAGE <br><br><a href='home'>Visit Homepage</a>" 
+            return render_template('rem_success.html') 
     
     def identify(self):
         active        = ['Morning','Noon','Afternoon','Evening']
@@ -359,9 +358,8 @@ class MyFlaskApp:
         print(log_title, "Printing documents below:\n", all_posts_list)
         print("")
             
-        if all_posts == None:
-            message = "You do not currently have any items in your collection yet please go back to the homeapge<br><br><a href='home'>Visit Homepage</a>"
-            return message
+        if not all_posts_list:
+            return render_template('view_empty.html')
         else:
             return render_template('view.html', all_posts=all_posts_list, email=self.curr_email)
 

@@ -1,6 +1,6 @@
+{% extends "base.html" %}
 
-{% extends "auth.html" %}
-{% block title %}Logged in - Avilog{% endblock %}
+{% block title %}Edit Catalogue - Avilog{% endblock %}
 
 {% block content %}
 
@@ -34,8 +34,10 @@
 </style>
 
 <div class="container">
-    <br><p>Hello! You have Logged in as {{ email }}</p>
-    <a href="{{ url_for('home') }}" class="button">Navigate to site</a>
+    <br><h3>You have no items in your catalogue to remove.</h3>
+    <p>Click the button below to return to the homepage.</p>
+    <a href="{{ url_for('home') }}" class="button">Return Home</a>
 </div>
+
 
 {% endblock %}
